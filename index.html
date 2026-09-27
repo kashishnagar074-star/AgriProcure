@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriProcure - Farmer Procurement Portal</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="login-container">
+
+        <div class="login-card">
+
+            <div class="logo-section">
+                <div class="logo">🌾</div>
+                <h1>AgriProcure</h1>
+                <p>Smart Procurement & Queue Management</p>
+            </div>
+
+            <div class="login-form">
+
+                <h2>Welcome Back</h2>
+                <p class="subtitle">Login to manage your procurement journey</p>
+
+                <label for="mobile">Mobile Number</label>
+                <input 
+                    type="text" 
+                    id="mobile" 
+                    placeholder="Enter 10-digit mobile number"
+                    maxlength="10"
+                >
+
+                <label for="role">Login As</label>
+
+                <select id="role">
+                    <option value="farmer">Farmer</option>
+                    <option value="officer">Procurement Officer</option>
+                    <option value="admin">Admin</option>
+                </select>
+
+                <button onclick="login()">Login</button>
+
+                <p id="message"></p>
+
+            </div>
+
+            <div class="login-footer">
+                <p>Digital Procurement Platform</p>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Farmer Dashboard - AgriProcure</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header class="dashboard-header">
+
+        <div>
+            <h1>AgriProcure</h1>
+            <p>Smart Procurement & Queue Management</p>
+        </div>
+
+        <button class="logout-btn" onclick="logout()">Logout</button>
+
+    </header>
+
+
+    <main class="dashboard">
+
+        <section class="welcome">
+            <h2>Welcome, Ramesh 👋</h2>
+            <p>Manage your procurement journey from one place.</p>
+        </section>
+
+
+        <!-- Quick Actions -->
+
+        <section class="quick-actions">
+
+            <div class="dashboard-card action-card">
+
+                <div class="card-icon">📅</div>
+
+                <h3>Book a Slot</h3>
+
+                <p>
+                    Choose a procurement centre and available time slot.
+                </p>
+
+                <button onclick="bookSlot()">
+                    Book Slot
+                </button>
+
+            </div>
+
+
+            <div class="dashboard-card action-card">
+
+                <div class="card-icon">🎫</div>
+
+                <h3>My Token</h3>
+
+                <p>
+                    View your procurement token and queue position.
+                </p>
+
+                <button onclick="viewToken()">
+                    View Token
+                </button>
+
+            </div>
+
+
+            <div class="dashboard-card action-card">
+
+                <div class="card-icon">💰</div>
+
+                <h3>Payment Status</h3>
+
+                <p>
+                    Track your procurement payment status.
+                </p>
+
+                <button onclick="viewPayment()">
+                    View Payment
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- Live Queue -->
+
+        <section class="dashboard-card queue-card">
+
+            <div class="section-heading">
+
+                <div>
+                    <h2>Live Queue</h2>
+                    <p>Sehore Procurement Centre</p>
+                </div>
+
+                <span class="live-badge">● LIVE</span>
+
+            </div>
+
+
+            <div class="queue-info">
+
+                <div>
+                    <span>Current Token</span>
+                    <strong>#24</strong>
+                </div>
+
+                <div>
+                    <span>Your Token</span>
+                    <strong>#42</strong>
+                </div>
+
+                <div>
+                    <span>Farmers Ahead</span>
+                    <strong>18</strong>
+                </div>
+
+                <div>
+                    <span>Estimated Wait</span>
+                    <strong>70 min</strong>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Procurement Status -->
+
+        <section class="dashboard-card">
+
+            <h2>Procurement Status</h2>
+
+            <div class="status-list">
+
+                <div class="status completed">
+                    <span>✓</span>
+                    <div>
+                        <strong>Registration</strong>
+                        <p>Completed</p>
+                    </div>
+                </div>
+
+
+                <div class="status completed">
+                    <span>✓</span>
+                    <div>
+                        <strong>Slot Booked</strong>
+                        <p>11:00 AM - 12:00 PM</p>
+                    </div>
+                </div>
+
+
+                <div class="status active">
+                    <span>●</span>
+                    <div>
+                        <strong>Waiting for Crop Reception</strong>
+                        <p>Your token is #42</p>
+                    </div>
+                </div>
+
+
+                <div class="status">
+                    <span>○</span>
+                    <div>
+                        <strong>Quality Check</strong>
+                        <p>Pending</p>
+                    </div>
+                </div>
+
+
+                <div class="status">
+                    <span>○</span>
+                    <div>
+                        <strong>Weighing & Procurement</strong>
+                        <p>Pending</p>
+                    </div>
+                </div>
+
+
+                <div class="status">
+                    <span>○</span>
+                    <div>
+                        <strong>Payment</strong>
+                        <p>Pending</p>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Farmer Information -->
+
+        <section class="dashboard-card farmer-info">
+
+            <h2>Farmer Information</h2>
+
+            <div class="info-grid">
+
+                <div>
+                    <span>Farmer Name</span>
+                    <strong>Ramesh Kumar</strong>
+                </div>
+
+                <div>
+                    <span>Crop</span>
+                    <strong>Wheat</strong>
+                </div>
+
+                <div>
+                    <span>Procurement Centre</span>
+                    <strong>Sehore Procurement Centre</strong>
+                </div>
+
+                <div>
+                    <span>Booking Date</span>
+                    <strong>21 September 2026</strong>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <script src="script.js"></script>
+
+</body>
+</html>
