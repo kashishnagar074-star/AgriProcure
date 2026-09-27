@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriProcure - Officer Dashboard</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f7f9;
+            color: #1f2937;
+        }
+
+        /* HEADER */
+        header {
+            background: #176b3a;
+            color: white;
+            padding: 17px 45px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand h1 {
+            font-size: 24px;
+        }
+
+        .brand p {
+            font-size: 13px;
+            margin-top: 4px;
+            opacity: 0.9;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .officer-name {
+            font-size: 14px;
+        }
+
+        .logout {
+            border: none;
+            background: white;
+            color: #176b3a;
+            padding: 9px 17px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* MAIN */
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .page-title {
+            margin-bottom: 25px;
+        }
+
+        .page-title h2 {
+            color: #123b27;
+            font-size: 28px;
+        }
+
+        .page-title p {
+            color: #6b7280;
+            margin-top: 6px;
+        }
+
+        /* CENTRE BAR */
+        .centre-bar {
+            background: white;
+            border: 1px solid #e1e7eb;
+            border-radius: 10px;
+            padding: 18px 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 22px;
+        }
+
+        .centre-info strong {
+            display: block;
+            font-size: 18px;
+            color: #176b3a;
+        }
+
+        .centre-info span {
+            color: #6b7280;
+            font-size: 13px;
+        }
+
+        .capacity {
+            text-align: right;
+        }
+
+        .capacity span {
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .capacity strong {
+            display: block;
+            margin-top: 4px;
+            color: #176b3a;
+        }
+
+        /* STAT CARDS */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: white;
+            border: 1px solid #e1e7eb;
+            border-radius: 10px;
+            padding: 22px;
+        }
+
+        .stat-card span {
+            color: #6b7280;
+            font-size: 13px;
+        }
+
+        .stat-card h2 {
+            margin-top: 8px;
+            font-size: 29px;
+            color: #176b3a;
+        }
+
+        /* CONTENT GRID */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1.6fr 1fr;
+            gap: 22px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #e1e7eb;
+            border-radius: 10px;
+            padding: 23px;
+        }
+
+        .card h3 {
+            color: #123b27;
+            margin-bottom: 20px;
+        }
+
+        /* QUEUE */
+        .queue-row {
+            display: grid;
+            grid-template-columns: 70px 1fr 100px 100px;
+            align-items: center;
+            padding: 14px 10px;
+            border-bottom: 1px solid #edf0f2;
+            gap: 10px;
+        }
+
+        .queue-row:last-child {
+            border-bottom: none;
+        }
+
+        .token {
+            font-weight: bold;
+            color: #176b3a;
+        }
+
+        .farmer-name {
+            font-weight: bold;
+        }
+
+        .crop {
+            color: #6b7280;
+            font-size: 13px;
+        }
+
+        .status {
+            font-size: 12px;
+            font-weight: bold;
+            padding: 6px 9px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .completed {
+            background: #e5f5eb;
+            color: #176b3a;
+        }
+
+        .processing {
+            background: #fff3d6;
+            color: #946200;
+        }
+
+        .waiting {
+            background: #eef2f5;
+            color: #5b6470;
+        }
+
+        .select-btn {
+            border: none;
+            background: #176b3a;
+            color: white;
+            padding: 7px 11px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        /* PROCESSING PANEL */
+        .farmer-box {
+            background: #f5faf7;
+            border: 1px solid #dcebe1;
+            border-radius: 8px;
+            padding: 17px;
+            margin-bottom: 20px;
+        }
+
+        .farmer-box h4 {
+            color: #176b3a;
+            font-size: 18px;
+        }
+
+        .farmer-box p {
+            color: #6b7280;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        .selected-token {
+            margin-top: 12px;
+            font-weight: bold;
+        }
+
+        /* STEPS */
+        .step {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 13px 0;
+            border-bottom: 1px solid #edf0f2;
+        }
+
+        .step:last-child {
+            border-bottom: none;
+        }
+
+        .step-name {
+            font-size: 14px;
+        }
+
+        .step-status {
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .done {
+            color: #176b3a;
+        }
+
+        .pending {
+            color: #9ca3af;
+        }
+
+        /* BUTTONS */
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .action-btn {
+            flex: 1;
+            border: none;
+            padding: 11px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .start {
+            background: #176b3a;
+            color: white;
+        }
+
+        .update {
+            background: #e8eef0;
+            color: #374151;
+        }
+
+        .message {
+            margin-top: 15px;
+            font-size: 13px;
+            font-weight: bold;
+            color: #176b3a;
+            text-align: center;
+        }
+
+        /* MOBILE */
+        @media (max-width: 850px) {
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .centre-bar {
+                align-items: flex-start;
+                gap: 15px;
+                flex-direction: column;
+            }
+
+            .capacity {
+                text-align: left;
+            }
+        }
+
+        @media (max-width: 600px) {
+
+            header {
+                padding: 15px 20px;
+            }
+
+            .header-right {
+                gap: 8px;
+            }
+
+            .officer-name {
+                display: none;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .queue-row {
+                grid-template-columns: 50px 1fr;
+            }
+
+            .queue-row .status,
+            .queue-row .select-btn {
+                grid-column: 2;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+
+    <div class="brand">
+        <h1>🌾 AgriProcure</h1>
+        <p>Smart Procurement & Queue Management</p>
+    </div>
+
+    <div class="header-right">
+        <div class="officer-name">
+            Procurement Officer
+        </div>
+
+        <button class="logout" onclick="logout()">
+            Logout
+        </button>
+    </div>
+
+</header>
+
+
+<div class="container">
+
+    <div class="page-title">
+        <h2>Procurement Officer Dashboard</h2>
+        <p>Monitor today's bookings, queue and farmer procurement workflow.</p>
+    </div>
+
+
+    <!-- CENTRE -->
+
+    <div class="centre-bar">
+
+        <div class="centre-info">
+            <strong>Sehore Procurement Centre</strong>
+            <span>22 September 2026 • Wheat Procurement</span>
+        </div>
+
+        <div class="capacity">
+            <span>Centre Capacity</span>
+            <strong>85% Utilized</strong>
+        </div>
+
+    </div>
+
+
+    <!-- STATS -->
+
+    <div class="stats">
+
+        <div class="stat-card">
+            <span>Total Bookings</span>
+            <h2>64</h2>
+        </div>
+
+        <div class="stat-card">
+            <span>Waiting</span>
+            <h2>18</h2>
+        </div>
+
+        <div class="stat-card">
+            <span>Processing</span>
+            <h2>1</h2>
+        </div>
+
+        <div class="stat-card">
+            <span>Completed</span>
+            <h2>45</h2>
+        </div>
+
+    </div>
+
+
+    <!-- MAIN CONTENT -->
+
+    <div class="content-grid">
+
+
+        <!-- LIVE QUEUE -->
+
+        <div class="card">
+
+            <h3>Live Procurement Queue</h3>
+
+            <div class="queue-row">
+                <span class="token">#23</span>
+                <div>
+                    <div class="farmer-name">Amit Sharma</div>
+                    <div class="crop">Wheat</div>
+                </div>
+                <span class="status completed">Completed</span>
+                <button class="select-btn" onclick="selectFarmer('Amit Sharma', 'Wheat', '23')">
+                    View
+                </button>
+            </div>
+
+
+            <div class="queue-row">
+                <span class="token">#24</span>
+                <div>
+                    <div class="farmer-name">Sunil Verma</div>
+                    <div class="crop">Wheat</div>
+                </div>
+                <span class="status processing">Processing</span>
+                <button class="select-btn" onclick="selectFarmer('Sunil Verma', 'Wheat', '24')">
+                    View
+                </button>
+            </div>
+
+
+            <div class="queue-row">
+                <span class="token">#25</span>
+                <div>
+                    <div class="farmer-name">Raj Kumar</div>
+                    <div class="crop">Wheat</div>
+                </div>
+                <span class="status waiting">Waiting</span>
+                <button class="select-btn" onclick="selectFarmer('Raj Kumar', 'Wheat', '25')">
+                    View
+                </button>
+            </div>
+
+
+            <div class="queue-row">
+                <span class="token">#31</span>
+                <div>
+                    <div class="farmer-name">Mohan Patel</div>
+                    <div class="crop">Wheat</div>
+                </div>
+                <span class="status waiting">Waiting</span>
+                <button class="select-btn" onclick="selectFarmer('Mohan Patel', 'Wheat', '31')">
+                    View
+                </button>
+            </div>
+
+
+            <div class="queue-row">
+                <span class="token">#42</span>
+                <div>
+                    <div class="farmer-name">Ramesh Kumar</div>
+                    <div class="crop">Wheat</div>
+                </div>
+                <span class="status waiting">Waiting</span>
+                <button class="select-btn" onclick="selectFarmer('Ramesh Kumar', 'Wheat', '42')">
+                    View
+                </button>
+            </div>
+
+        </div>
+
+
+        <!-- FARMER PROCESSING -->
+
+        <div class="card">
+
+            <h3>Farmer Processing</h3>
+
+            <div class="farmer-box">
+
+                <h4 id="farmerName">Ramesh Kumar</h4>
+
+                <p id="farmerCrop">
+                    Wheat
+                </p>
+
+                <div class="selected-token">
+                    Token <span id="farmerToken">#42</span>
+                </div>
+
+            </div>
+
+
+            <div class="step">
+
+                <span class="step-name">
+                    Farmer Verification
+                </span>
+
+                <span class="step-status done">
+                    ✓ Completed
+                </span>
+
+            </div>
+
+
+            <div class="step">
+
+                <span class="step-name">
+                    Crop Reception
+                </span>
+
+                <span class="step-status done">
+                    ✓ Completed
+                </span>
+
+            </div>
+
+
+            <div class="step">
+
+                <span class="step-name">
+                    Quality Check
+                </span>
+
+                <span class="step-status pending" id="qualityStatus">
+                    Pending
+                </span>
+
+            </div>
+
+
+            <div class="step">
+
+                <span class="step-name">
+                    Weighing
+                </span>
+
+                <span class="step-status pending" id="weighingStatus">
+                    Pending
+                </span>
+
+            </div>
+
+
+            <div class="step">
+
+                <span class="step-name">
+                    Procurement
+                </span>
+
+                <span class="step-status pending" id="procurementStatus">
+                    Pending
+                </span>
+
+            </div>
+
+
+            <div class="step">
+
+                <span class="step-name">
+                    Bill Generated
+                </span>
+
+                <span class="step-status pending" id="billStatus">
+                    Pending
+                </span>
+
+            </div>
+
+
+            <div class="step">
+
+                <span class="step-name">
+                    Payment
+                </span>
+
+                <span class="step-status pending" id="paymentStatus">
+                    Pending
+                </span>
+
+            </div>
+
+
+            <div class="actions">
+
+                <button class="action-btn start" onclick="startProcessing()">
+                    Start Processing
+                </button>
+
+                <button class="action-btn update" onclick="updateStatus()">
+                    Update Status
+                </button>
+                <button class="action-btn update" onclick="markPaymentCredited()">
+               Mark Payment Credited
+             </button>
+
+            </div>
+
+
+            <div class="message" id="message"></div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+let selectedFarmer = "Ramesh Kumar";
+let selectedCrop = "Wheat";
+let selectedToken = "42";
+
+
+function selectFarmer(name, crop, token) {
+
+    selectedFarmer = name;
+    selectedCrop = crop;
+    selectedToken = token;
+
+    document.getElementById("farmerName").innerText = name;
+    document.getElementById("farmerCrop").innerText = crop;
+    document.getElementById("farmerToken").innerText = "#" + token;
+
+    document.getElementById("message").innerText =
+        "Farmer #" + token + " selected.";
+
+}
+
+function startProcessing() {
+
+    localStorage.setItem("currentToken", selectedToken);
+
+    document.getElementById("message").innerText =
+        "Processing started for " +
+        selectedFarmer +
+        " (Token #" +
+        selectedToken +
+        ").";
+}
+
+function updateStatus() {
+
+    // Save shared status for Farmer side
+    localStorage.setItem("procurementStatus", "Payment Processing");
+    localStorage.setItem("qualityCheck", "Completed");
+    localStorage.setItem("weighing", "Completed");
+    localStorage.setItem("procurement", "Completed");
+    localStorage.setItem("bill", "Generated");
+    localStorage.setItem("payment", "Processing");
+
+
+    // Update Officer Dashboard
+
+    document.getElementById("qualityStatus").innerText = "✓ Completed";
+    document.getElementById("qualityStatus").className = "step-status done";
+
+    document.getElementById("weighingStatus").innerText = "✓ Completed";
+    document.getElementById("weighingStatus").className = "step-status done";
+
+    document.getElementById("procurementStatus").innerText = "✓ Completed";
+    document.getElementById("procurementStatus").className = "step-status done";
+
+    document.getElementById("billStatus").innerText = "✓ Generated";
+    document.getElementById("billStatus").className = "step-status done";
+
+    document.getElementById("paymentStatus").innerText = "Processing";
+    document.getElementById("paymentStatus").className = "step-status processing";
+
+
+    // Success message
+const message = document.getElementById("message");
+
+message.innerText =
+    "✓ Procurement status updated successfully for " +
+    selectedFarmer +
+    " (Token #" + selectedToken + ").";
+
+message.style.color = "#176b3a";
+message.style.fontWeight = "bold";
+}
+function markPaymentCredited() {
+
+    localStorage.setItem("payment", "Completed");
+
+    document.getElementById("paymentStatus").innerText =
+        "✓ Credited";
+
+    document.getElementById("paymentStatus").className =
+        "step-status done";
+
+    const message = document.getElementById("message");
+
+    message.innerText =
+        "✓ Payment credited successfully for " +
+        selectedFarmer +
+        " (Token #" +
+        selectedToken +
+        ").";
+
+    message.style.color = "#176b3a";
+    message.style.fontWeight = "bold";
+}
+
+
+function logout() {
+    window.location.href = "index22.html";
+}
+
+</script>
+
+</body>
+</html>

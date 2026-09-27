@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Farmer Help - AgriProcure</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f5f8f6;
+            color: #222;
+        }
+
+        /* HEADER */
+
+        .header {
+            background: #176b3a;
+            color: white;
+            padding: 18px 6%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-icon {
+            font-size: 27px;
+        }
+
+        .brand h2 {
+            font-size: 21px;
+        }
+
+        .brand p {
+            font-size: 11px;
+            opacity: 0.85;
+            margin-top: 2px;
+        }
+
+        .logout-btn {
+            border: 1px solid rgba(255,255,255,0.5);
+            background: transparent;
+            color: white;
+            padding: 9px 17px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        /* MAIN */
+
+        .container {
+            width: 92%;
+            max-width: 1000px;
+            margin: 30px auto;
+        }
+
+        /* HERO */
+
+        .hero {
+            background: linear-gradient(135deg, #176b3a, #249052);
+            color: white;
+            padding: 32px;
+            border-radius: 20px;
+            margin-bottom: 22px;
+        }
+
+        .hero-content {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .hero-icon {
+            width: 65px;
+            height: 65px;
+            flex-shrink: 0;
+            border-radius: 16px;
+            background: rgba(255,255,255,0.14);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+        }
+
+        .hero h1 {
+            font-size: 30px;
+            margin-bottom: 7px;
+        }
+
+        .hero p {
+            font-size: 14px;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+
+        /* CHAT CARD */
+
+        .chat-card {
+            background: white;
+            border: 1px solid #e1e8e3;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 5px 18px rgba(0,0,0,0.04);
+        }
+
+        .chat-header {
+            padding: 18px 22px;
+            border-bottom: 1px solid #e7ece8;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .bot-info {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+        }
+
+        .bot-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: #e2f2e7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .bot-info strong {
+            display: block;
+            font-size: 15px;
+        }
+
+        .bot-info span {
+            display: block;
+            font-size: 11px;
+            color: #176b3a;
+            margin-top: 3px;
+        }
+
+        .online {
+            width: 9px;
+            height: 9px;
+            background: #2e9d58;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 5px;
+        }
+
+        /* CHAT AREA */
+
+        .chat-area {
+            height: 410px;
+            overflow-y: auto;
+            padding: 22px;
+            background: #f9fbfa;
+        }
+
+        .message {
+            display: flex;
+            margin-bottom: 16px;
+        }
+
+        .message.bot {
+            justify-content: flex-start;
+        }
+
+        .message.user {
+            justify-content: flex-end;
+        }
+
+        .bubble {
+            max-width: 72%;
+            padding: 12px 15px;
+            border-radius: 15px;
+            font-size: 13px;
+            line-height: 1.55;
+        }
+
+        .bot .bubble {
+            background: white;
+            border: 1px solid #e1e8e3;
+            border-bottom-left-radius: 5px;
+        }
+
+        .user .bubble {
+            background: #176b3a;
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+
+        /* QUICK QUESTIONS */
+
+        .quick-section {
+            padding: 16px 20px;
+            border-top: 1px solid #e7ece8;
+            background: white;
+        }
+
+        .quick-section p {
+            color: #777;
+            font-size: 11px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .quick-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .quick-buttons button {
+            border: 1px solid #d5e1d8;
+            background: #f5f9f6;
+            color: #176b3a;
+            padding: 8px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .quick-buttons button:hover {
+            background: #e3f1e7;
+        }
+
+        /* INPUT */
+
+        .input-area {
+            padding: 15px 20px 20px;
+            display: flex;
+            gap: 10px;
+            background: white;
+        }
+
+        .input-area input {
+            flex: 1;
+            min-width: 0;
+            border: 1px solid #d5dfd8;
+            border-radius: 10px;
+            padding: 12px 14px;
+            outline: none;
+            font-size: 13px;
+        }
+
+        .input-area input:focus {
+            border-color: #176b3a;
+        }
+
+        .send-btn {
+            border: none;
+            background: #176b3a;
+            color: white;
+            padding: 0 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        /* LANGUAGE */
+
+        .language {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 18px;
+        }
+
+        .language button {
+            border: 1px solid #d5e1d8;
+            background: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .language button.active {
+            background: #176b3a;
+            color: white;
+            border-color: #176b3a;
+        }
+
+        /* BOTTOM */
+
+        .bottom-actions {
+            display: flex;
+            justify-content: center;
+            margin-top: 22px;
+        }
+
+        .dashboard-btn {
+            border: none;
+            background: #edf3ef;
+            color: #176b3a;
+            border: 1px solid #d5e1d8;
+            padding: 11px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 600px) {
+
+            .header {
+                padding: 15px 5%;
+            }
+
+            .brand h2 {
+                font-size: 18px;
+            }
+
+            .brand p {
+                display: none;
+            }
+
+            .container {
+                width: 94%;
+                margin: 20px auto;
+            }
+
+            .hero {
+                padding: 24px 20px;
+            }
+
+            .hero-content {
+                align-items: flex-start;
+            }
+
+            .hero h1 {
+                font-size: 24px;
+            }
+
+            .hero-icon {
+                width: 52px;
+                height: 52px;
+                font-size: 25px;
+            }
+
+            .chat-area {
+                height: 390px;
+                padding: 16px;
+            }
+
+            .bubble {
+                max-width: 85%;
+            }
+
+            .quick-buttons {
+                flex-direction: column;
+            }
+
+            .quick-buttons button {
+                width: 100%;
+                text-align: left;
+            }
+
+            .input-area {
+                padding: 12px;
+            }
+
+            .send-btn {
+                padding: 0 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+
+    <header class="header">
+
+        <div class="brand">
+
+            <div class="brand-icon">🌾</div>
+
+            <div>
+                <h2>AgriProcure</h2>
+                <p>Smart Procurement & Queue Management</p>
+            </div>
+
+        </div>
+
+        <button class="logout-btn" onclick="logout()">
+            Logout
+        </button>
+
+    </header>
+
+
+    <main class="container">
+
+        <!-- HERO -->
+
+        <section class="hero">
+
+            <div class="hero-content">
+
+                <div class="hero-icon">
+                    🤖
+                </div>
+
+                <div>
+
+                    <h1>Farmer Help</h1>
+
+                    <p>
+                        Ask questions about slot booking, tokens,
+                        queues, procurement and payments.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- CHAT -->
+
+        <section class="chat-card">
+
+            <!-- CHAT HEADER -->
+
+            <div class="chat-header">
+
+                <div class="bot-info">
+
+                    <div class="bot-icon">
+                        🤖
+                    </div>
+
+                    <div>
+
+                        <strong>AgriProcure Assistant</strong>
+
+                        <span>
+                            <span class="online"></span>
+                            Online
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- CHAT AREA -->
+
+            <div
+                class="chat-area"
+                id="chatArea">
+
+                <div class="message bot">
+
+                    <div class="bubble">
+
+                        👋 Hello Ramesh!
+
+                        <br><br>
+
+                        I am your AgriProcure Assistant.
+                        How can I help you today?
+
+                    </div>
+
+                </div>
+
+                <div class="message bot">
+
+                    <div class="bubble">
+
+                        You can ask me about your
+                        <b>slot, token, live queue,
+                        procurement or payment.</b>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- QUICK QUESTIONS -->
+
+            <div class="quick-section">
+
+                <p>QUICK QUESTIONS</p>
+
+                <div class="quick-buttons">
+
+                    <button onclick="askQuestion('How do I book a slot?')">
+                        📅 Book a Slot
+                    </button>
+
+                    <button onclick="askQuestion('What is my token?')">
+                        🎫 My Token
+                    </button>
+
+                    <button onclick="askQuestion('How many farmers are ahead?')">
+                        📊 Live Queue
+                    </button>
+
+                    <button onclick="askQuestion('What is my payment status?')">
+                        💰 Payment
+                    </button>
+
+                    <button onclick="askQuestion('What is my procurement status?')">
+                        🌾 Procurement
+                    </button>
+
+                    <button onclick="askQuestion('Where are nearby centres?')">
+                        📍 Nearby Centres
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- INPUT -->
+
+            <div class="input-area">
+
+                <input
+                    type="text"
+                    id="userInput"
+                    placeholder="Type your question..."
+                    onkeydown="handleEnter(event)">
+
+                <button
+                    class="send-btn"
+                    onclick="sendMessage()">
+                    Send
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- LANGUAGE -->
+
+        <div class="language">
+
+            <button
+                id="englishBtn"
+                class="active"
+                onclick="setLanguage('en')">
+                English
+            </button>
+
+            <button
+                id="hindiBtn"
+                onclick="setLanguage('hi')">
+                हिंदी
+            </button>
+
+        </div>
+
+
+        <!-- DASHBOARD -->
+
+        <div class="bottom-actions">
+
+            <button
+                class="dashboard-btn"
+                onclick="goDashboard()">
+                ← Back to Dashboard
+            </button>
+
+        </div>
+
+    </main>
+
+
+    <script>
+
+        let language = "en";
+
+
+        /* LANGUAGE */
+
+        function setLanguage(selectedLanguage) {
+
+            language = selectedLanguage;
+
+            document
+                .getElementById("englishBtn")
+                .classList.remove("active");
+
+            document
+                .getElementById("hindiBtn")
+                .classList.remove("active");
+
+
+            if (language === "en") {
+
+                document
+                    .getElementById("englishBtn")
+                    .classList.add("active");
+
+                document
+                    .getElementById("userInput")
+                    .placeholder =
+                    "Type your question...";
+
+            } else {
+
+                document
+                    .getElementById("hindiBtn")
+                    .classList.add("active");
+
+                document
+                    .getElementById("userInput")
+                    .placeholder =
+                    "अपना सवाल लिखें...";
+
+            }
+
+        }
+
+
+        /* SEND MESSAGE */
+
+        function sendMessage() {
+
+            const input =
+                document.getElementById("userInput");
+
+            const question =
+                input.value.trim();
+
+
+            if (question === "") {
+                return;
+            }
+
+
+            addMessage(question, "user");
+
+            input.value = "";
+
+            setTimeout(function() {
+
+                const response =
+                    getBotResponse(question);
+
+                addMessage(response.text, "bot");
+
+
+                if (response.action) {
+
+                    setTimeout(function() {
+
+                        window.location.href =
+                            response.action;
+
+                    }, 1000);
+
+                }
+
+            }, 500);
+
+        }
+
+
+        /* QUICK QUESTION */
+
+        function askQuestion(question) {
+
+            document
+                .getElementById("userInput")
+                .value = question;
+
+            sendMessage();
+
+        }
+
+
+        /* ENTER KEY */
+
+        function handleEnter(event) {
+
+            if (event.key === "Enter") {
+
+                sendMessage();
+
+            }
+
+        }
+
+
+        /* ADD MESSAGE */
+
+        function addMessage(text, type) {
+
+            const chatArea =
+                document.getElementById("chatArea");
+
+
+            const message =
+                document.createElement("div");
+
+            message.className =
+                "message " + type;
+
+
+            const bubble =
+                document.createElement("div");
+
+            bubble.className = "bubble";
+
+            bubble.innerHTML = text;
+
+
+            message.appendChild(bubble);
+
+            chatArea.appendChild(message);
+
+
+            chatArea.scrollTop =
+                chatArea.scrollHeight;
+
+        }
+
+
+        /* BOT RESPONSES */
+
+        function getBotResponse(question) {
+
+            const text =
+                question.toLowerCase();
+
+
+            /* SLOT */
+
+            if (
+                text.includes("slot") ||
+                text.includes("book") ||
+                text.includes("स्लॉट") ||
+                text.includes("बुक")
+            ) {
+
+                return {
+
+                    text:
+                        language === "hi"
+                        ? "आप AgriProcure पर उपलब्ध तारीख और समय चुनकर अपना procurement slot book कर सकते हैं। मैं आपको booking page पर ले जा सकता हूँ।"
+                        : "You can book your procurement slot by selecting an available date and time. I can take you to the booking page.",
+
+                    action: "book-slot.html"
+
+                };
+
+            }
+
+
+            /* TOKEN */
+
+            if (
+                text.includes("token") ||
+                text.includes("टोकन")
+            ) {
+
+                return {
+
+                    text:
+                        language === "hi"
+                        ? "आपका digital token नंबर <b>#42</b> है।"
+                        : "Your digital token number is <b>#42</b>."
+
+                };
+
+            }
+
+
+            /* QUEUE */
+
+            if (
+                text.includes("queue") ||
+                text.includes("ahead") ||
+                text.includes("line") ||
+                text.includes("कितने") ||
+                text.includes("लाइन")
+            ) {
+
+                return {
+
+                    text:
+                        language === "hi"
+                        ? "आपके आगे <b>18 किसान</b> हैं और अनुमानित प्रतीक्षा समय लगभग <b>70 मिनट</b> है।"
+                        : "There are <b>18 farmers</b> ahead of you. The estimated waiting time is about <b>70 minutes</b>."
+
+                };
+
+            }
+
+
+            /* PAYMENT */
+
+            if (
+                text.includes("payment") ||
+                text.includes("pay") ||
+                text.includes("भुगतान") ||
+                text.includes("पेमेंट")
+            ) {
+
+                return {
+
+                    text:
+                        language === "hi"
+                        ? "आपका payment अभी <b>Processing</b> में है।"
+                        : "Your payment is currently <b>Processing</b>.",
+
+                    action: "paymentstatus.html"
+
+                };
+
+            }
+
+
+            /* PROCUREMENT */
+
+            if (
+                text.includes("procurement") ||
+                text.includes("crop status") ||
+                text.includes("फसल") ||
+                text.includes("खरीद")
+            ) {
+
+                return {
+
+                    text:
+                        language === "hi"
+                        ? "आपकी procurement journey में crop verification, weighing, procurement, bill और payment शामिल हैं।"
+                        : "Your procurement journey includes crop verification, weighing, procurement, bill generation and payment.",
+
+                    action: "procurementstatus.html"
+
+                };
+
+            }
+
+
+            /* NEARBY CENTRES */
+
+            if (
+                text.includes("nearby") ||
+                text.includes("centre") ||
+                text.includes("center") ||
+                text.includes("केंद्र") ||
+                text.includes("पास")
+            ) {
+
+                return {
+
+                    text:
+                        language === "hi"
+                        ? "मैं आपको nearby procurement centres की जानकारी दिखा सकता हूँ।"
+                        : "I can show you nearby procurement centres.",
+
+                    action: "nearby-centres.html"
+
+                };
+
+            }
+
+
+            /* HELP */
+
+            if (
+                text.includes("help") ||
+                text.includes("मदद") ||
+                text.includes("problem") ||
+                text.includes("समस्या")
+            ) {
+
+                return {
+
+                    text:
+                        language === "hi"
+                        ? "मैं slot booking, token, queue, procurement और payment से जुड़ी जानकारी में आपकी मदद कर सकता हूँ।"
+                        : "I can help you with slot booking, tokens, queue, procurement and payment information."
+
+                };
+
+            }
+
+
+            /* DEFAULT */
+
+            return {
+
+                text:
+                    language === "hi"
+                    ? "मैं अभी slot, token, queue, procurement, payment या nearby centre से जुड़े सवालों में मदद कर सकता हूँ।"
+                    : "I can currently help with questions about slots, tokens, queues, procurement, payments and nearby centres."
+
+            };
+
+        }
+
+
+        /* NAVIGATION */
+
+        function goDashboard() {
+
+            window.location.href =
+                "farmer-dashboard.html";
+
+        }
+
+
+        function logout() {
+
+            window.location.href =
+                "index22.html";
+
+        }
+
+    </script>
+
+</body>
+</html>

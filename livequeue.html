@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Live Queue - AgriProcure</title>
+</head>
+
+<body style="
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#eef4f1;
+    color:#222;
+">
+
+    <!-- HEADER -->
+
+    <div style="
+        background:white;
+        padding:20px 7%;
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        border-bottom:1px solid #ddd;
+    ">
+
+        <div>
+            <h1 style="
+                margin:0;
+                color:#176b3a;
+                font-size:40px;
+            ">
+                AgriProcure
+            </h1>
+
+            <p style="
+                margin:5px 0 0;
+                color:#777;
+            ">
+                Smart Procurement & Queue Management
+            </p>
+        </div>
+
+        <button onclick="logout()" style="
+            background:#176b3a;
+            color:white;
+            border:none;
+            padding:13px 25px;
+            border-radius:8px;
+            font-size:16px;
+            font-weight:bold;
+            cursor:pointer;
+        ">
+            Logout
+        </button>
+
+    </div>
+
+
+    <!-- MAIN -->
+
+    <div style="
+        width:86%;
+        max-width:950px;
+        margin:40px auto;
+    ">
+
+
+        <!-- PAGE HEADING -->
+
+        <div style="
+            margin-bottom:25px;
+        ">
+
+            <div style="
+                display:flex;
+                align-items:center;
+                gap:10px;
+            ">
+
+                <span style="
+                    width:12px;
+                    height:12px;
+                    background:#e53935;
+                    border-radius:50%;
+                    display:inline-block;
+                "></span>
+
+                <span style="
+                    color:#e53935;
+                    font-weight:bold;
+                    font-size:14px;
+                ">
+                    LIVE QUEUE
+                </span>
+
+            </div>
+
+            <h2 style="
+                font-size:30px;
+                margin:10px 0 5px;
+            ">
+                Your Queue Position
+            </h2>
+
+            <p style="
+                color:#777;
+                margin:0;
+            ">
+                Sehore Procurement Centre
+            </p>
+
+        </div>
+
+
+        <!-- MAIN QUEUE CARD -->
+
+        <div style="
+            background:white;
+            border:1px solid #ddd;
+            border-radius:18px;
+            padding:35px;
+            text-align:center;
+        ">
+
+            <p style="
+                color:#777;
+                font-size:13px;
+                font-weight:bold;
+                letter-spacing:1px;
+                margin-bottom:5px;
+            ">
+                CURRENTLY SERVING
+            </p>
+
+            <div id="currentToken" style="
+                color:#176b3a;
+                font-size:72px;
+                font-weight:bold;
+                margin:5px 0 20px;
+            ">
+                #24
+            </div>
+
+
+            <!-- PROGRESS -->
+
+            <div style="
+                width:100%;
+                height:12px;
+                background:#e5eee8;
+                border-radius:20px;
+                overflow:hidden;
+                margin:20px 0 30px;
+            ">
+
+                <div id="progressBar" style="
+                    width:57%;
+                    height:100%;
+                    background:#176b3a;
+                    border-radius:20px;
+                "></div>
+
+            </div>
+
+
+            <!-- YOUR POSITION -->
+
+            <div style="
+                background:#eaf5ed;
+                border-radius:14px;
+                padding:25px;
+                margin-bottom:25px;
+            ">
+
+                <p style="
+                    margin:0;
+                    color:#555;
+                ">
+                    Your Token
+                </p>
+
+                <strong id="yourToken" style="
+                    display:block;
+                    font-size:42px;
+                    color:#176b3a;
+                    margin:5px 0;
+                ">
+                    #42
+                </strong>
+
+                <p style="
+                    margin:0;
+                    color:#555;
+                ">
+                    <strong id="farmersAhead">18</strong>
+                    farmers ahead of you
+                
+
+            </div>
+
+
+            <!-- STATS -->
+
+            <div style="
+                display:grid;
+                grid-template-columns:repeat(3,1fr);
+                gap:15px;
+            ">
+
+                <div style="
+                    background:#f6f8f7;
+                    padding:20px;
+                    border-radius:12px;
+                ">
+
+                    <span style="
+                        color:#777;
+                        font-size:13px;
+                    ">
+                        Estimated Wait
+                    </span>
+
+                    <strong id="waitTime" style="
+                        display:block;
+                        color:#176b3a;
+                        font-size:25px;
+                        margin-top:7px;
+                    ">
+                        70 min
+                    </strong>
+
+                </div>
+
+
+                <div style="
+                    background:#f6f8f7;
+                    padding:20px;
+                    border-radius:12px;
+                ">
+
+                    <span style="
+                        color:#777;
+                        font-size:13px;
+                    ">
+                        Centre Capacity
+                    </span>
+
+                    <strong style="
+                        display:block;
+                        color:#176b3a;
+                        font-size:25px;
+                        margin-top:7px;
+                    ">
+                        85%
+                    </strong>
+
+                </div>
+
+
+                <div style="
+                    background:#f6f8f7;
+                    padding:20px;
+                    border-radius:12px;
+                ">
+
+                    <span style="
+                        color:#777;
+                        font-size:13px;
+                    ">
+                        Avg. Processing
+                    </span>
+
+                    <strong style="
+                        display:block;
+                        color:#176b3a;
+                        font-size:25px;
+                        margin-top:7px;
+                    ">
+                        4 min
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- CURRENT ACTIVITY -->
+
+        <div style="
+            background:white;
+            border:1px solid #ddd;
+            border-radius:18px;
+            padding:28px;
+            margin-top:20px;
+        ">
+
+            <h2 style="
+                margin-top:0;
+                margin-bottom:20px;
+            ">
+                Queue Activity
+            </h2>
+
+
+            <div style="
+                display:flex;
+                align-items:center;
+                gap:15px;
+                padding:15px 0;
+                border-bottom:1px solid #eee;
+            ">
+
+                <span style="
+                    background:#e7f5eb;
+                    color:#176b3a;
+                    padding:8px 10px;
+                    border-radius:50%;
+                ">
+                    ✓
+                </span>
+
+                <div>
+
+                    <strong id="completedActivity">Token #23 completed</strong>
+
+                    <p style="
+                        margin:5px 0 0;
+                        color:#777;
+                        font-size:13px;
+                    ">
+                        Crop weighing completed
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div style="
+                display:flex;
+                align-items:center;
+                gap:15px;
+                padding:15px 0;
+                border-bottom:1px solid #eee;
+            ">
+
+                <span style="
+                    background:#fff3e0;
+                    color:#ef6c00;
+                    padding:8px 10px;
+                    border-radius:50%;
+                ">
+                    ●
+                </span>
+
+                <div>
+
+                    <strong id="processingActivity">
+                     Token #24 being processed
+                    </strong>
+
+                    <p style="
+                        margin:5px 0 0;
+                        color:#777;
+                        font-size:13px;
+                    ">
+                        Crop verification in progress
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div style="
+                display:flex;
+                align-items:center;
+                gap:15px;
+                padding:15px 0;
+            ">
+
+                <span style="
+                    background:#f1f3f2;
+                    color:#777;
+                    padding:8px 10px;
+                    border-radius:50%;
+                ">
+                    →
+                </span>
+
+                <div>
+
+                    <strong id="yourTurnActivity">Your turn: Token #42</strong>
+
+                    <p style="
+                        margin:5px 0 0;
+                        color:#777;
+                        font-size:13px;
+                    ">
+                        Please be ready when your turn approaches.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- INFORMATION -->
+
+        <div style="
+            background:#fff;
+            border-left:5px solid #176b3a;
+            padding:18px;
+            margin-top:20px;
+            border-radius:8px;
+        ">
+
+            <strong>
+                Important:
+            </strong>
+
+            <span style="color:#555;">
+                You don't need to wait at the centre continuously.
+                Monitor your queue position and arrive when your
+                turn is approaching.
+            </span>
+
+        </div>
+
+
+        <!-- BUTTONS -->
+
+        <div style="
+            display:flex;
+            gap:15px;
+            margin-top:20px;
+        ">
+
+            <button onclick="window.location.href='farmer-dashboard.html'"
+                flex:1;
+                padding:15px;
+                border:1px solid #176b3a;
+                border-radius:8px;
+                background:white;
+                color:#176b3a;
+                font-size:16px;
+                font-weight:bold;
+                cursor:pointer;
+            ">
+                Go to Dashboard
+            </button>
+
+            <button onclick="window.location.href='procurementstatus.html'"
+                flex:1;
+                padding:15px;
+                border:none;
+                border-radius:8px;
+                background:#176b3a;
+                color:white;
+                font-size:16px;
+                font-weight:bold;
+                cursor:pointer;
+            ">
+                View Procurement Status
+            </button>
+
+        </div>
+
+    </div>
+    <script>
+
+let currentToken = 24;
+let yourToken = 42;
+
+const savedToken = localStorage.getItem("currentToken");
+
+if (savedToken) {
+    currentToken = Number(savedToken);
+}
+
+function loadBookingToken() {
+
+    const bookingData = localStorage.getItem("bookingData");
+
+    if (!bookingData) return;
+
+    const booking = JSON.parse(bookingData);
+
+    yourToken = booking.token;
+
+    document.getElementById("yourToken").innerText =
+        "#" + yourToken;
+}
+
+loadBookingToken();
+
+document.getElementById("currentToken").innerText =
+    "#" + currentToken;
+const farmersAhead = Math.max(0, yourToken - currentToken);
+
+document.getElementById("farmersAhead").innerText =
+    farmersAhead;
+
+document.getElementById("waitTime").innerText =
+    (farmersAhead * 4) + " min";
+document.getElementById("processingActivity").innerText =
+    "Token #" + currentToken + " being processed";
+document.getElementById("yourTurnActivity").innerText =
+    "Your turn: Token #" + yourToken;
+document.getElementById("completedActivity").innerText =
+    "Token #" + Math.max(0, currentToken - 1) + " completed";
+    
+        /*
+         * Demo queue simulation.
+         * In the final backend version this value
+         * will come from the server/database.
+         */
+
+        
+
+
+        function goDashboard() {
+            window.location.href = "farmer-dashboard.html";
+        }
+
+
+        function goStatus() {
+            window.location.href = "procurementstatus.html";
+        }
+
+
+        function logout() {
+            window.location.href = "index22.html";
+        }
+
+    </script>
+
+</body>
+
+</html>

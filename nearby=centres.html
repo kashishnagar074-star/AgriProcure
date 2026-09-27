@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>AgriProcure - Nearby Centres</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    background:#f4f7f5;
+    color:#1d2b22;
+}
+
+/* HEADER */
+
+.header{
+    background:#176b3a;
+    color:white;
+    padding:17px 6%;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.brand{
+    font-size:22px;
+    font-weight:700;
+}
+
+.logout-btn{
+    border:none;
+    background:white;
+    color:#176b3a;
+    padding:9px 17px;
+    border-radius:8px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+/* CONTAINER */
+
+.container{
+    width:90%;
+    max-width:1100px;
+    margin:32px auto;
+}
+
+/* PAGE HEADER */
+
+.page-header{
+    margin-bottom:25px;
+}
+
+.page-header h1{
+    font-size:32px;
+    color:#176b3a;
+    margin-bottom:8px;
+}
+
+.page-header p{
+    color:#68736d;
+    font-size:15px;
+}
+
+/* SEARCH */
+
+.search-box{
+    background:white;
+    padding:18px;
+    border-radius:15px;
+    border:1px solid #e0e7e2;
+    display:flex;
+    gap:12px;
+    margin-bottom:25px;
+}
+
+.search-box input{
+    flex:1;
+    border:1px solid #d5ded8;
+    padding:12px 15px;
+    border-radius:9px;
+    font-size:14px;
+    outline:none;
+}
+
+.search-box input:focus{
+    border-color:#176b3a;
+}
+
+.location-btn{
+    border:none;
+    background:#176b3a;
+    color:white;
+    padding:12px 18px;
+    border-radius:9px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+/* CENTRES GRID */
+
+.centres-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:20px;
+}
+
+/* CENTRE CARD */
+
+.centre-card{
+    background:white;
+    border:1px solid #e0e7e2;
+    border-radius:18px;
+    padding:22px;
+    box-shadow:0 4px 15px rgba(0,0,0,.04);
+    transition:.2s ease;
+}
+
+.centre-card:hover{
+    transform:translateY(-3px);
+    box-shadow:0 9px 24px rgba(0,0,0,.08);
+}
+
+/* CARD TOP */
+
+.card-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:15px;
+}
+
+.centre-icon{
+    width:48px;
+    height:48px;
+    border-radius:13px;
+    background:#e4f3e8;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:24px;
+}
+
+.centre-info{
+    flex:1;
+}
+
+.centre-info h2{
+    font-size:18px;
+    margin-bottom:6px;
+    color:#1c3024;
+}
+
+.distance{
+    color:#707b75;
+    font-size:13px;
+}
+
+.status{
+    padding:6px 10px;
+    border-radius:20px;
+    font-size:11px;
+    font-weight:700;
+}
+
+.open{
+    background:#e4f5e9;
+    color:#176b3a;
+}
+
+.busy{
+    background:#fff3d6;
+    color:#9a6900;
+}
+
+/* DETAILS */
+
+.details{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+    margin:20px 0;
+}
+
+.detail{
+    background:#f7faf8;
+    border-radius:10px;
+    padding:12px;
+}
+
+.detail span{
+    display:block;
+    font-size:11px;
+    color:#78827d;
+    margin-bottom:5px;
+}
+
+.detail strong{
+    font-size:14px;
+    color:#25352c;
+}
+
+/* CROPS */
+
+.crops{
+    margin-bottom:18px;
+}
+
+.crops-title{
+    font-size:12px;
+    color:#78827d;
+    margin-bottom:8px;
+}
+
+.crop-tags{
+    display:flex;
+    gap:7px;
+    flex-wrap:wrap;
+}
+
+.crop-tag{
+    background:#edf6f0;
+    color:#176b3a;
+    padding:6px 10px;
+    border-radius:20px;
+    font-size:11px;
+    font-weight:600;
+}
+
+/* BUTTONS */
+
+.actions{
+    display:flex;
+    gap:10px;
+}
+
+.actions button{
+    flex:1;
+    padding:11px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:700;
+    font-size:13px;
+}
+
+.details-btn{
+    background:white;
+    color:#176b3a;
+    border:1px solid #176b3a;
+}
+
+.book-btn{
+    background:#176b3a;
+    color:white;
+    border:1px solid #176b3a;
+}
+
+/* INFO */
+
+.info-box{
+    margin-top:25px;
+    background:#eaf5ee;
+    border:1px solid #d4eadb;
+    padding:18px;
+    border-radius:14px;
+    display:flex;
+    gap:14px;
+    align-items:flex-start;
+}
+
+.info-icon{
+    font-size:23px;
+}
+
+.info-box strong{
+    display:block;
+    color:#176b3a;
+    margin-bottom:5px;
+}
+
+.info-box p{
+    font-size:13px;
+    color:#5d6b63;
+    line-height:1.5;
+}
+
+/* BACK */
+
+.back-btn{
+    margin-top:25px;
+    border:none;
+    background:#176b3a;
+    color:white;
+    padding:12px 22px;
+    border-radius:9px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+/* MOBILE */
+
+@media(max-width:750px){
+
+    .centres-grid{
+        grid-template-columns:1fr;
+    }
+
+    .search-box{
+        flex-direction:column;
+    }
+
+}
+
+@media(max-width:500px){
+
+    .container{
+        width:92%;
+    }
+
+    .page-header h1{
+        font-size:26px;
+    }
+
+    .card-top{
+        flex-wrap:wrap;
+    }
+
+    .details{
+        grid-template-columns:1fr;
+    }
+
+    .actions{
+        flex-direction:column;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<header class="header">
+
+    <div class="brand">
+        🌾 AgriProcure
+    </div>
+
+    <button class="logout-btn" onclick="logout()">
+        Logout
+    </button>
+
+</header>
+
+
+<div class="container">
+
+    <div class="page-header">
+
+        <h1>📍 Nearby Procurement Centres</h1>
+
+        <p>
+            Find procurement centres, check queue status
+            and book your preferred slot.
+        </p>
+
+    </div>
+
+
+    <!-- SEARCH -->
+
+    <div class="search-box">
+
+        <input
+            type="text"
+            id="searchInput"
+            placeholder="Search centre by name..."
+            onkeyup="searchCentres()"
+        >
+
+        <button
+            class="location-btn"
+            onclick="useLocation()"
+        >
+            📍 Use My Location
+        </button>
+
+    </div>
+
+
+    <!-- CENTRES -->
+
+    <div class="centres-grid" id="centresGrid">
+
+
+        <!-- SEHORE -->
+
+        <div class="centre-card" data-name="sehore">
+
+            <div class="card-top">
+
+                <div class="centre-icon">
+                    🏢
+                </div>
+
+                <div class="centre-info">
+
+                    <h2>Sehore Procurement Centre</h2>
+
+                    <div class="distance">
+                        📍 4.2 km away
+                    </div>
+
+                </div>
+
+                <span class="status open">
+                    OPEN
+                </span>
+
+            </div>
+
+
+            <div class="details">
+
+                <div class="detail">
+                    <span>Current Queue</span>
+                    <strong>18 Farmers</strong>
+                </div>
+
+                <div class="detail">
+                    <span>Estimated Wait</span>
+                    <strong>~70 min</strong>
+                </div>
+
+                <div class="detail">
+                    <span>Today's Slots</span>
+                    <strong>12 Available</strong>
+                </div>
+
+                <div class="detail">
+                    <span>Centre Status</span>
+                    <strong>Operating</strong>
+                </div>
+
+            </div>
+
+
+            <div class="crops">
+
+                <div class="crops-title">
+                    Accepted Crops
+                </div>
+
+                <div class="crop-tags">
+
+                    <span class="crop-tag">Wheat</span>
+                    <span class="crop-tag">Paddy</span>
+                    <span class="crop-tag">Soybean</span>
+
+                </div>
+
+            </div>
+
+
+            <div class="actions">
+
+                <button
+                    class="details-btn"
+                    onclick="showDetails('Sehore Procurement Centre')"
+                >
+                    View Details
+                </button>
+
+                <button
+                    class="book-btn"
+                    onclick="bookSlot()"
+                >
+                    Book Slot
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- BHOPAL -->
+
+        <div class="centre-card" data-name="bhopal">
+
+            <div class="card-top">
+
+                <div class="centre-icon">
+                    🏢
+                </div>
+
+                <div class="centre-info">
+
+                    <h2>Bhopal Procurement Centre</h2>
+
+                    <div class="distance">
+                        📍 8.7 km away
+                    </div>
+
+                </div>
+
+                <span class="status busy">
+                    BUSY
+                </span>
+
+            </div>
+
+
+            <div class="details">
+
+                <div class="detail">
+                    <span>Current Queue</span>
+                    <strong>31 Farmers</strong>
+                </div>
+
+                <div class="detail">
+                    <span>Estimated Wait</span>
+                    <strong>~2 hrs</strong>
+                </div>
+
+                <div class="detail">
+                    <span>Today's Slots</span>
+                    <strong>6 Available</strong>
+                </div>
+
+                <div class="detail">
+                    <span>Centre Status</span>
+                    <strong>High Load</strong>
+                </div>
+
+            </div>
+
+
+            <div class="crops">
+
+                <div class="crops-title">
+                    Accepted Crops
+                </div>
+
+                <div class="crop-tags">
+
+                    <span class="crop-tag">Wheat</span>
+                    <span class="crop-tag">Soybean</span>
+                    <span class="crop-tag">Maize</span>
+
+                </div>
+
+            </div>
+
+
+            <div class="actions">
+
+                <button
+                    class="details-btn"
+                    onclick="showDetails('Bhopal Procurement Centre')"
+                >
+                    View Details
+                </button>
+
+                <button
+                    class="book-btn"
+                    onclick="bookSlot()"
+                >
+                    Book Slot
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- ASHTA -->
+
+        <div class="centre-card" data-name="ashta">
+
+            <div class="card-top">
+
+                <div class="centre-icon">
+                    🏢
+                </div>
+
+                <div class="centre-info">
+
+                    <h2>Ashta Procurement Centre</h2>
+
+                    <div class="distance">
+                        📍 12.4 km away
+                    </div>
+
+                </div>
+
+                <span class="status open">
+                    OPEN
+                </span>
+
+            </div>
+
+
+            <div class="details">
+
+                <div class="detail">
+                    <span>Current Queue</span>
+                    <strong>9 Farmers</strong>
+                </div>
+
+                <div class="detail">
+                    <span>Estimated Wait</span>
+                    <strong>~35 min</strong>
+                </div>
+
+                <div class="detail">
+                    <span>Today's Slots</span>
+                    <strong>18 Available</strong>
+                </div>
+
+                <div class="detail">
+                    <span>Centre Status</span>
+                    <strong>Operating</strong>
+                </div>
+
+            </div>
+
+
+            <div class="crops">
+
+                <div class="crops-title">
+                    Accepted Crops
+                </div>
+
+                <div class="crop-tags">
+
+                    <span class="crop-tag">Wheat</span>
+                    <span class="crop-tag">Paddy</span>
+                    <span class="crop-tag">Maize</span>
+
+                </div>
+
+            </div>
+
+
+            <div class="actions">
+
+                <button
+                    class="details-btn"
+                    onclick="showDetails('Ashta Procurement Centre')"
+                >
+                    View Details
+                </button>
+
+                <button
+                    class="book-btn"
+                    onclick="bookSlot()"
+                >
+                    Book Slot
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- SEHORE 2 -->
+
+        <div class="centre-card" data-name="ichhawar">
+
+            <div class="card-top">
+
+                <div class="centre-icon">
+                    🏢
+                </div>
+
+                <div class="centre-info">
+
+                    <h2>Ichhawar Procurement Centre</h2>
+
+                    <div class="distance">
+                        📍 16.1 km away
+                    </div>
+
+                </div>
+
+                <span class="status open">
+                    OPEN
+                </span>
+
+            </div>
+
+
+            <div class="details">
+
+                <div class="detail">
+                    <span>Current Queue</span>
+                    <strong>7 Farmers</strong>
+                </div>
+
+                <div class="detail">
+                    <span>Estimated Wait</span>
+                    <strong>~28 min</strong>
+                </div>
+
+                <div class="detail">
+                    <span>Today's Slots</span>
+                    <strong>21 Available</strong>
+                </div>
+
+                <div class="detail">
+                    <span>Centre Status</span>
+                    <strong>Operating</strong>
+                </div>
+
+            </div>
+
+
+            <div class="crops">
+
+                <div class="crops-title">
+                    Accepted Crops
+                </div>
+
+                <div class="crop-tags">
+
+                    <span class="crop-tag">Wheat</span>
+                    <span class="crop-tag">Soybean</span>
+
+                </div>
+
+            </div>
+
+
+            <div class="actions">
+
+                <button
+                    class="details-btn"
+                    onclick="showDetails('Ichhawar Procurement Centre')"
+                >
+                    View Details
+                </button>
+
+                <button
+                    class="book-btn"
+                    onclick="bookSlot()"
+                >
+                    Book Slot
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- INFO -->
+
+    <div class="info-box">
+
+        <div class="info-icon">
+            💡
+        </div>
+
+        <div>
+
+            <strong>
+                Smart Queue Information
+            </strong>
+
+            <p>
+                Queue and waiting-time information helps you
+                choose a suitable procurement centre before
+                visiting.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <button
+        class="back-btn"
+        onclick="goDashboard()"
+    >
+        ← Back to Dashboard
+    </button>
+
+</div>
+
+
+<script>
+
+function bookSlot(){
+
+    window.location.href =
+        "book-slot.html";
+}
+
+
+function goDashboard(){
+
+    window.location.href =
+        "farmer-dashboard.html";
+}
+
+
+function logout(){
+
+    window.location.href =
+        "index22.html";
+}
+
+
+function showDetails(name){
+
+    alert(
+        name +
+        "\n\nCentre is currently available for procurement.\n" +
+        "You can check the queue and book your slot."
+    );
+}
+
+
+function searchCentres(){
+
+    const input =
+        document.getElementById("searchInput")
+        .value
+        .toLowerCase();
+
+    const cards =
+        document.querySelectorAll(".centre-card");
+
+    cards.forEach(function(card){
+
+        const name =
+            card.dataset.name.toLowerCase();
+
+        if(name.includes(input)){
+
+            card.style.display = "block";
+
+        }else{
+
+            card.style.display = "none";
+
+        }
+
+    });
+
+}
+
+
+function useLocation(){
+
+    alert(
+        "Location service will connect to the live map after backend/API integration."
+    );
+
+}
+
+</script>
+
+</body>
+</html>

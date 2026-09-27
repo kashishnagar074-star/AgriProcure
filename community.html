@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Farmer Community - AgriProcure</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f5f8f6;
+            color: #1f2937;
+        }
+
+        /* HEADER */
+
+        header {
+            background: #176b3a;
+            color: white;
+            padding: 18px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .logout {
+            background: white;
+            color: #176b3a;
+            border: none;
+            padding: 9px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* MAIN */
+
+        .container {
+            width: 90%;
+            max-width: 1050px;
+            margin: 35px auto;
+        }
+
+        .page-title {
+            margin-bottom: 25px;
+        }
+
+        .page-title h1 {
+            font-size: 30px;
+            margin-bottom: 7px;
+        }
+
+        .page-title p {
+            color: #6b7280;
+        }
+
+        /* COMMUNITY STATS */
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: white;
+            border: 1px solid #e1e8e3;
+            border-radius: 14px;
+            padding: 20px;
+        }
+
+        .stat-card span {
+            font-size: 26px;
+        }
+
+        .stat-card h3 {
+            font-size: 24px;
+            margin-top: 8px;
+        }
+
+        .stat-card p {
+            color: #6b7280;
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        /* CREATE POST */
+
+        .create-post {
+            background: white;
+            border: 1px solid #e1e8e3;
+            border-radius: 16px;
+            padding: 22px;
+            margin-bottom: 25px;
+        }
+
+        .create-post h2 {
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 90px;
+            resize: vertical;
+            border: 1px solid #d8e0db;
+            border-radius: 10px;
+            padding: 14px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        textarea:focus {
+            border-color: #176b3a;
+        }
+
+        .post-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+        }
+
+        .post-type {
+            color: #6b7280;
+            font-size: 13px;
+        }
+
+        .post-btn {
+            background: #176b3a;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* FEED */
+
+        .community-feed {
+            background: white;
+            border: 1px solid #e1e8e3;
+            border-radius: 16px;
+            padding: 25px;
+        }
+
+        .feed-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .feed-header h2 {
+            font-size: 21px;
+        }
+
+        .filter {
+            border: 1px solid #d8e0db;
+            padding: 8px 10px;
+            border-radius: 8px;
+            background: white;
+        }
+
+        /* POST */
+
+        .post {
+            border: 1px solid #e5e7eb;
+            border-radius: 13px;
+            padding: 18px;
+            margin-bottom: 15px;
+        }
+
+        .post:last-child {
+            margin-bottom: 0;
+        }
+
+        .post-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 13px;
+        }
+
+        .farmer-info {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+        }
+
+        .avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: #edf7f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .farmer-info strong {
+            display: block;
+            font-size: 15px;
+        }
+
+        .farmer-info small {
+            color: #9ca3af;
+            font-size: 12px;
+        }
+
+        .tag {
+            background: #edf7f0;
+            color: #176b3a;
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .post-text {
+            color: #374151;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        /* INTERACTIONS */
+
+        .post-actions-row {
+            display: flex;
+            gap: 18px;
+            border-top: 1px solid #edf0ee;
+            padding-top: 12px;
+        }
+
+        .interaction-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #6b7280;
+            font-size: 13px;
+        }
+
+        .interaction-btn:hover {
+            color: #176b3a;
+        }
+
+        .liked {
+            color: #176b3a !important;
+            font-weight: bold;
+        }
+
+        /* BOTTOM */
+
+        .bottom-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        .btn {
+            padding: 11px 20px;
+            border-radius: 9px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .primary {
+            background: #176b3a;
+            color: white;
+        }
+
+        .secondary {
+            background: #edf7f0;
+            color: #176b3a;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 700px) {
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .feed-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .post-actions {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .bottom-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+
+    <header>
+
+        <div class="logo">
+            🌾 AgriProcure
+        </div>
+
+        <button
+            class="logout"
+            onclick="logout()">
+
+            Logout
+
+        </button>
+
+    </header>
+
+
+    <!-- MAIN -->
+
+    <main class="container">
+
+        <div class="page-title">
+
+            <h1>👥 Farmer Community</h1>
+
+            <p>
+                Connect, ask questions and learn from other farmers.
+            </p>
+
+        </div>
+
+
+        <!-- STATS -->
+
+        <section class="stats">
+
+            <div class="stat-card">
+
+                <span>👨‍🌾</span>
+
+                <h3>
+                    1,248
+                </h3>
+
+                <p>
+                    Farmers Connected
+                </p>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <span>💬</span>
+
+                <h3>
+                    326
+                </h3>
+
+                <p>
+                    Discussions
+                </p>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <span>🌱</span>
+
+                <h3>
+                    18
+                </h3>
+
+                <p>
+                    Active Topics
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- CREATE POST -->
+
+        <section class="create-post">
+
+            <h2>
+                Start a Discussion
+            </h2>
+
+            <textarea
+                id="postText"
+                placeholder="Ask something or share your farming experience...">
+            </textarea>
+
+            <div class="post-actions">
+
+                <span class="post-type">
+                    🌾 Share with farmer community
+                </span>
+
+                <button
+                    class="post-btn"
+                    onclick="createPost()">
+
+                    Post
+
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- COMMUNITY FEED -->
+
+        <section class="community-feed">
+
+            <div class="feed-header">
+
+                <h2>
+                    Community Discussions
+                </h2>
+
+                <select
+                    class="filter"
+                    onchange="filterPosts(this.value)">
+
+                    <option value="all">
+                        All Topics
+                    </option>
+
+                    <option value="wheat">
+                        Wheat
+                    </option>
+
+                    <option value="procurement">
+                        Procurement
+                    </option>
+
+                    <option value="market">
+                        Market
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- POST 1 -->
+
+            <div
+                class="post"
+                data-topic="wheat">
+
+                <div class="post-top">
+
+                    <div class="farmer-info">
+
+                        <div class="avatar">
+                            👨‍🌾
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Amit Sharma
+                            </strong>
+
+                            <small>
+                                Sehore • 25 min ago
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                    <span class="tag">
+                        WHEAT
+                    </span>
+
+                </div>
+
+
+                <p class="post-text">
+                    Has anyone received information about today's wheat
+                    procurement schedule at Sehore centre?
+                </p>
+
+
+                <div class="post-actions-row">
+
+                    <button
+                        class="interaction-btn"
+                        onclick="likePost(this)">
+
+                        👍 Like <span>12</span>
+
+                    </button>
+
+                    <button
+                        class="interaction-btn">
+
+                        💬 Reply 4
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- POST 2 -->
+
+            <div
+                class="post"
+                data-topic="procurement">
+
+                <div class="post-top">
+
+                    <div class="farmer-info">
+
+                        <div class="avatar">
+                            👨‍🌾
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Sunil Verma
+                            </strong>
+
+                            <small>
+                                Bhopal • 1 hour ago
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                    <span class="tag">
+                        PROCUREMENT
+                    </span>
+
+                </div>
+
+
+                <p class="post-text">
+                    My crop verification was completed today.
+                    The procurement process is now showing as completed
+                    in the app.
+                </p>
+
+
+                <div class="post-actions-row">
+
+                    <button
+                        class="interaction-btn"
+                        onclick="likePost(this)">
+
+                        👍 Like <span>8</span>
+
+                    </button>
+
+                    <button
+                        class="interaction-btn">
+
+                        💬 Reply 2
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- POST 3 -->
+
+            <div
+                class="post"
+                data-topic="market">
+
+                <div class="post-top">
+
+                    <div class="farmer-info">
+
+                        <div class="avatar">
+                            👩‍🌾
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Kavita Patel
+                            </strong>
+
+                            <small>
+                                Ashta • 2 hours ago
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                    <span class="tag">
+                        MARKET
+                    </span>
+
+                </div>
+
+
+                <p class="post-text">
+                    Which procurement centre currently has shorter
+                    waiting time? Please share your experience.
+                </p>
+
+
+                <div class="post-actions-row">
+
+                    <button
+                        class="interaction-btn"
+                        onclick="likePost(this)">
+
+                        👍 Like <span>15</span>
+
+                    </button>
+
+                    <button
+                        class="interaction-btn">
+
+                        💬 Reply 6
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+        <!-- BOTTOM ACTIONS -->
+
+        <div class="bottom-actions">
+
+            <button
+                class="btn primary"
+                onclick="goDashboard()">
+
+                ← Back to Dashboard
+
+            </button>
+
+            <button
+                class="btn secondary"
+                onclick="goNearby()">
+
+                🗺️ Nearby Centres
+
+            </button>
+
+        </div>
+
+    </main>
+
+
+    <script>
+
+        /* CREATE POST */
+
+        function createPost() {
+
+            const text =
+                document.getElementById("postText").value.trim();
+
+            if (text === "") {
+
+                alert("Please write something before posting.");
+
+                return;
+            }
+
+            const feed =
+                document.querySelector(".community-feed");
+
+            const post =
+                document.createElement("div");
+
+            post.className = "post";
+
+            post.setAttribute("data-topic", "all");
+
+            post.innerHTML = `
+
+                <div class="post-top">
+
+                    <div class="farmer-info">
+
+                        <div class="avatar">
+                            👩‍🌾
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                You
+                            </strong>
+
+                            <small>
+                                Just now
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                    <span class="tag">
+                        COMMUNITY
+                    </span>
+
+                </div>
+
+                <p class="post-text">
+                    ${escapeHTML(text)}
+                </p>
+
+                <div class="post-actions-row">
+
+                    <button
+                        class="interaction-btn"
+                        onclick="likePost(this)">
+
+                        👍 Like <span>0</span>
+
+                    </button>
+
+                    <button class="interaction-btn">
+
+                        💬 Reply 0
+
+                    </button>
+
+                </div>
+            `;
+
+            feed.appendChild(post);
+
+            document.getElementById("postText").value = "";
+
+            alert("Your discussion has been posted!");
+
+        }
+
+
+        /* LIKE */
+
+        function likePost(button) {
+
+            const count =
+                button.querySelector("span");
+
+            let likes =
+                parseInt(count.innerText);
+
+            if (button.classList.contains("liked")) {
+
+                likes--;
+
+                button.classList.remove("liked");
+
+            } else {
+
+                likes++;
+
+                button.classList.add("liked");
+
+            }
+
+            count.innerText = likes;
+
+        }
+
+
+        /* FILTER */
+
+        function filterPosts(topic) {
+
+            const posts =
+                document.querySelectorAll(".post");
+
+            posts.forEach(function(post) {
+
+                const postTopic =
+                    post.getAttribute("data-topic");
+
+                if (
+                    topic === "all" ||
+                    postTopic === topic ||
+                    postTopic === "all"
+                ) {
+
+                    post.style.display = "block";
+
+                } else {
+
+                    post.style.display = "none";
+
+                }
+
+            });
+
+        }
+
+
+        /* SECURITY */
+
+        function escapeHTML(text) {
+
+            const div =
+                document.createElement("div");
+
+            div.innerText = text;
+
+            return div.innerHTML;
+
+        }
+
+
+        /* NAVIGATION */
+
+        function goDashboard() {
+
+            window.location.href =
+                "farmer-dashboard.html";
+
+        }
+
+
+        function goNearby() {
+
+            window.location.href =
+                "nearby-centres.html";
+
+        }
+
+
+        function logout() {
+
+            window.location.href =
+                "index22.html";
+
+        }
+
+    </script>
+
+</body>
+</html>

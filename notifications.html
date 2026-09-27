@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Notifications - AgriProcure</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f5f8f6;
+            color: #1f2937;
+        }
+
+        /* HEADER */
+        header {
+            background: #176b3a;
+            color: white;
+            padding: 18px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .logout {
+            background: white;
+            color: #176b3a;
+            border: none;
+            padding: 9px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* MAIN */
+        .container {
+            width: 90%;
+            max-width: 1050px;
+            margin: 35px auto;
+        }
+
+        .page-title {
+            margin-bottom: 25px;
+        }
+
+        .page-title h1 {
+            font-size: 30px;
+            margin-bottom: 7px;
+        }
+
+        .page-title p {
+            color: #6b7280;
+        }
+
+        /* SUMMARY */
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-bottom: 28px;
+        }
+
+        .summary-card {
+            background: white;
+            border: 1px solid #e1e8e3;
+            border-radius: 14px;
+            padding: 20px;
+        }
+
+        .summary-card span {
+            font-size: 28px;
+        }
+
+        .summary-card h3 {
+            margin-top: 10px;
+            font-size: 25px;
+        }
+
+        .summary-card p {
+            color: #6b7280;
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        /* NOTIFICATIONS */
+        .notification-box {
+            background: white;
+            border: 1px solid #e1e8e3;
+            border-radius: 16px;
+            padding: 25px;
+        }
+
+        .notification-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .notification-header h2 {
+            font-size: 21px;
+        }
+
+        .mark-btn {
+            background: #edf7f0;
+            color: #176b3a;
+            border: none;
+            padding: 9px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .notification {
+            display: flex;
+            gap: 15px;
+            padding: 18px;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            margin-bottom: 14px;
+            background: #ffffff;
+            transition: 0.2s;
+        }
+
+        .notification:hover {
+            border-color: #176b3a;
+            transform: translateY(-2px);
+        }
+
+        .notification.unread {
+            background: #f0f8f3;
+            border-left: 4px solid #176b3a;
+        }
+
+        .notification-icon {
+            width: 45px;
+            height: 45px;
+            min-width: 45px;
+            background: #edf7f0;
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 22px;
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-content h3 {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .notification-content p {
+            color: #6b7280;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .time {
+            display: block;
+            margin-top: 7px;
+            color: #9ca3af;
+            font-size: 12px;
+        }
+
+        .status {
+            font-size: 12px;
+            padding: 5px 9px;
+            border-radius: 20px;
+            background: #e5f5eb;
+            color: #176b3a;
+            height: fit-content;
+            white-space: nowrap;
+        }
+
+        /* BUTTONS */
+        .actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        .btn {
+            padding: 11px 20px;
+            border-radius: 9px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .primary {
+            background: #176b3a;
+            color: white;
+        }
+
+        .secondary {
+            background: #edf7f0;
+            color: #176b3a;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 700px) {
+
+            .summary {
+                grid-template-columns: 1fr;
+            }
+
+            .notification-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .notification {
+                padding: 14px;
+            }
+
+            .status {
+                display: none;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header>
+
+        <div class="logo">
+            🌾 AgriProcure
+        </div>
+
+        <button class="logout" onclick="logout()">
+            Logout
+        </button>
+
+    </header>
+
+
+    <!-- MAIN -->
+    <main class="container">
+
+        <div class="page-title">
+
+            <h1>🔔 Notifications</h1>
+
+            <p>
+                Stay updated about your procurement journey.
+            </p>
+
+        </div>
+
+
+        <!-- SUMMARY -->
+        <section class="summary">
+
+            <div class="summary-card">
+
+                <span>📩</span>
+
+                <h3 id="totalNotifications">
+                    6
+                </h3>
+
+                <p>
+                    Total Notifications
+                </p>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <span>🔵</span>
+
+                <h3 id="unreadNotifications">
+                    3
+                </h3>
+
+                <p>
+                    Unread Notifications
+                </p>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <span>✅</span>
+
+                <h3>
+                    Active
+                </h3>
+
+                <p>
+                    Notification Service
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- NOTIFICATION BOX -->
+        <section class="notification-box">
+
+            <div class="notification-header">
+
+                <h2>
+                    Recent Updates
+                </h2>
+
+                <button
+                    class="mark-btn"
+                    onclick="markAllRead()">
+
+                    Mark all as read
+
+                </button>
+
+            </div>
+
+
+            <!-- 1 -->
+            <div class="notification unread">
+
+                <div class="notification-icon">
+                    🎟️
+                </div>
+
+                <div class="notification-content">
+
+                    <h3>
+                        Slot Booking Confirmed
+                    </h3>
+
+                    <p>
+                        Your wheat procurement slot has been successfully booked
+                        at Sehore Procurement Centre.
+                    </p>
+
+                    <span class="time">
+                        Today • 10:30 AM
+                    </span>
+
+                </div>
+
+                <span class="status">
+                    New
+                </span>
+
+            </div>
+
+
+            <!-- 2 -->
+            <div class="notification unread">
+
+                <div class="notification-icon">
+                    🔢
+                </div>
+
+                <div class="notification-content">
+
+                    <h3>
+                        Your Token is #42
+                    </h3>
+
+                    <p>
+                        You have received token #42. Please arrive according
+                        to your scheduled slot.
+                    </p>
+
+                    <span class="time">
+                        Today • 10:32 AM
+                    </span>
+
+                </div>
+
+                <span class="status">
+                    New
+                </span>
+
+            </div>
+
+
+            <!-- 3 -->
+            <div class="notification unread">
+
+                <div class="notification-icon">
+                    🕐
+                </div>
+
+                <div class="notification-content">
+
+                    <h3>
+                        Queue Update
+                    </h3>
+
+                    <p>
+                        There are currently 18 farmers ahead of you.
+                        Estimated waiting time is around 70 minutes.
+                    </p>
+
+                    <span class="time">
+                        Today • 10:45 AM
+                    </span>
+
+                </div>
+
+                <span class="status">
+                    New
+                </span>
+
+            </div>
+
+
+            <!-- 4 -->
+            <div class="notification">
+
+                <div class="notification-icon">
+                    ⚖️
+                </div>
+
+                <div class="notification-content">
+
+                    <h3>
+                        Weighing Completed
+                    </h3>
+
+                    <p>
+                        Your crop weighing process has been completed successfully.
+                    </p>
+
+                    <span class="time">
+                        Today • 12:15 PM
+                    </span>
+
+                </div>
+
+                <span class="status">
+                    Done
+                </span>
+
+            </div>
+
+
+            <!-- 5 -->
+            <div class="notification">
+
+                <div class="notification-icon">
+                    📦
+                </div>
+
+                <div class="notification-content">
+
+                    <h3>
+                        Procurement Completed
+                    </h3>
+
+                    <p>
+                        Your crop procurement process has been completed.
+                        Bill has been generated.
+                    </p>
+
+                    <span class="time">
+                        Today • 1:20 PM
+                    </span>
+
+                </div>
+
+                <span class="status">
+                    Done
+                </span>
+
+            </div>
+
+
+            <!-- 6 -->
+            <div class="notification">
+
+                <div class="notification-icon">
+                    💰
+                </div>
+
+                <div class="notification-content">
+
+                    <h3>
+                        Payment Processing
+                    </h3>
+
+                    <p>
+                        Your procurement payment is currently being processed.
+                        You will be notified after credit.
+                    </p>
+
+                    <span class="time">
+                        Today • 1:35 PM
+                    </span>
+
+                </div>
+
+                <span class="status">
+                    Processing
+                </span>
+
+            </div>
+
+
+            <!-- ACTIONS -->
+            <div class="actions">
+
+                <button
+                    class="btn primary"
+                    onclick="goDashboard()">
+
+                    ← Back to Dashboard
+
+                </button>
+
+                <button
+                    class="btn secondary"
+                    onclick="viewStatus()">
+
+                    View Procurement Status
+
+                </button>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <script>
+
+        function markAllRead() {
+
+            const notifications =
+                document.querySelectorAll(".notification");
+
+            notifications.forEach(function(notification) {
+
+                notification.classList.remove("unread");
+
+                const status =
+                    notification.querySelector(".status");
+
+                if (status.innerText === "New") {
+                    status.innerText = "Read";
+                    status.style.background = "#f3f4f6";
+                    status.style.color = "#6b7280";
+                }
+
+            });
+
+            document.getElementById("unreadNotifications").innerText = "0";
+
+        }
+
+
+        function goDashboard() {
+
+            window.location.href =
+                "farmer-dashboard.html";
+
+        }
+
+
+        function viewStatus() {
+
+            window.location.href =
+                "procurementstatus.html";
+
+        }
+
+
+        function logout() {
+
+            window.location.href =
+                "index22.html";
+
+        }
+
+    </script>
+
+</body>
+</html>

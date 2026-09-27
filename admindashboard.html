@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriProcure - Admin Dashboard</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f7f9;
+            color: #1f2937;
+        }
+
+        /* HEADER */
+
+        header {
+            background: #176b3a;
+            color: white;
+            padding: 17px 45px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand h1 {
+            font-size: 24px;
+        }
+
+        .brand p {
+            font-size: 13px;
+            margin-top: 4px;
+            opacity: 0.9;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .admin-name {
+            font-size: 14px;
+        }
+
+        .logout {
+            border: none;
+            background: white;
+            color: #176b3a;
+            padding: 9px 17px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* MAIN */
+
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .page-title {
+            margin-bottom: 25px;
+        }
+
+        .page-title h2 {
+            color: #123b27;
+            font-size: 28px;
+        }
+
+        .page-title p {
+            color: #6b7280;
+            margin-top: 6px;
+        }
+
+        /* SYSTEM STATUS */
+
+        .system-status {
+            background: white;
+            border: 1px solid #e1e7eb;
+            border-radius: 10px;
+            padding: 18px 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 22px;
+        }
+
+        .system-info strong {
+            color: #176b3a;
+            font-size: 17px;
+        }
+
+        .system-info span {
+            display: block;
+            color: #6b7280;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        .online {
+            background: #e5f5eb;
+            color: #176b3a;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        /* STATS */
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 16px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: white;
+            border: 1px solid #e1e7eb;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .stat-card span {
+            color: #6b7280;
+            font-size: 13px;
+        }
+
+        .stat-card h2 {
+            margin-top: 9px;
+            color: #176b3a;
+            font-size: 27px;
+        }
+
+        /* GRID */
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1.6fr 1fr;
+            gap: 22px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #e1e7eb;
+            border-radius: 10px;
+            padding: 23px;
+        }
+
+        .card h3 {
+            color: #123b27;
+            margin-bottom: 20px;
+        }
+
+        /* TABLE */
+
+        .table-header,
+        .table-row {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr 1fr;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .table-header {
+            background: #f5f8f6;
+            padding: 12px;
+            color: #6b7280;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .table-row {
+            padding: 15px 12px;
+            border-bottom: 1px solid #edf0f2;
+            font-size: 13px;
+        }
+
+        .table-row:last-child {
+            border-bottom: none;
+        }
+
+        .centre-name {
+            font-weight: bold;
+            color: #176b3a;
+        }
+
+        .capacity-bar {
+            width: 100%;
+            height: 7px;
+            background: #e8edf0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .capacity-fill {
+            height: 100%;
+            background: #176b3a;
+        }
+
+        .high-load {
+            background: #fff1d6;
+            color: #946200;
+            padding: 5px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .active {
+            background: #e5f5eb;
+            color: #176b3a;
+            padding: 5px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        /* PAYMENT */
+
+        .payment-item {
+            padding: 15px 0;
+            border-bottom: 1px solid #edf0f2;
+        }
+
+        .payment-item:last-child {
+            border-bottom: none;
+        }
+
+        .payment-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .payment-top strong {
+            font-size: 14px;
+        }
+
+        .payment-amount {
+            color: #176b3a;
+            font-weight: bold;
+        }
+
+        .payment-item p {
+            color: #6b7280;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .pending-payment {
+            color: #946200;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* ACTIVITY */
+
+        .activity {
+            margin-top: 22px;
+        }
+
+        .activity-item {
+            display: flex;
+            gap: 12px;
+            padding: 13px 0;
+            border-bottom: 1px solid #edf0f2;
+        }
+
+        .activity-dot {
+            width: 9px;
+            height: 9px;
+            background: #176b3a;
+            border-radius: 50%;
+            margin-top: 5px;
+            flex-shrink: 0;
+        }
+
+        .activity-item strong {
+            font-size: 13px;
+        }
+
+        .activity-item p {
+            color: #6b7280;
+            font-size: 12px;
+            margin-top: 3px;
+        }
+
+        /* BUTTONS */
+
+        .actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        .action-btn {
+            border: none;
+            padding: 11px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .primary {
+            background: #176b3a;
+            color: white;
+        }
+
+        .secondary {
+            background: #e8eef0;
+            color: #374151;
+        }
+
+        .message {
+            margin-top: 14px;
+            color: #176b3a;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 1000px) {
+
+            .stats {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 650px) {
+
+            header {
+                padding: 15px 20px;
+            }
+
+            .admin-name {
+                display: none;
+            }
+
+            .stats {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .system-status {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .table-header,
+            .table-row {
+                grid-template-columns: 1.4fr 1fr 1fr;
+            }
+
+            .table-header div:last-child,
+            .table-row div:last-child {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+
+    <div class="brand">
+        <h1>🌾 AgriProcure</h1>
+        <p>Smart Procurement & Queue Management</p>
+    </div>
+
+    <div class="header-right">
+
+        <div class="admin-name">
+            System Administrator
+        </div>
+
+        <button class="logout" onclick="logout()">
+            Logout
+        </button>
+
+    </div>
+
+</header>
+
+
+<div class="container">
+
+    <div class="page-title">
+
+        <h2>Admin Dashboard</h2>
+
+        <p>
+            Monitor procurement centres, queues, capacity and payment activity.
+        </p>
+
+    </div>
+
+
+    <!-- SYSTEM STATUS -->
+
+    <div class="system-status">
+
+        <div class="system-info">
+
+            <strong>AgriProcure System</strong>
+
+            <span>
+                Monitoring all connected procurement centres
+            </span>
+
+        </div>
+
+        <div class="online">
+            ● SYSTEM ONLINE
+        </div>
+
+    </div>
+
+
+    <!-- STAT CARDS -->
+
+    <div class="stats">
+
+        <div class="stat-card">
+
+            <span>Total Farmers</span>
+
+            <h2>1,248</h2>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <span>Today's Bookings</span>
+
+            <h2>342</h2>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <span>Active Queues</span>
+
+            <h2>18</h2>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <span>Completed</span>
+
+            <h2>276</h2>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <span>Pending Payments</span>
+
+            <h2>66</h2>
+
+        </div>
+
+    </div>
+
+
+    <!-- MAIN GRID -->
+
+    <div class="grid">
+
+
+        <!-- CENTRE MONITORING -->
+
+        <div class="card">
+
+            <h3>Procurement Centre Monitoring</h3>
+
+
+            <div class="table-header">
+
+                <div>Centre</div>
+                <div>Capacity</div>
+                <div>Queue</div>
+                <div>Status</div>
+
+            </div>
+
+
+            <div class="table-row">
+
+                <div class="centre-name">
+                    Sehore
+                </div>
+
+                <div>
+
+                    <strong>85%</strong>
+
+                    <div class="capacity-bar">
+
+                        <div
+                            class="capacity-fill"
+                            style="width:85%;">
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div>
+                    18 Farmers
+                </div>
+
+                <div>
+                    <span class="active">
+                        Active
+                    </span>
+                </div>
+
+            </div>
+
+
+            <div class="table-row">
+
+                <div class="centre-name">
+                    Bhopal
+                </div>
+
+                <div>
+
+                    <strong>72%</strong>
+
+                    <div class="capacity-bar">
+
+                        <div
+                            class="capacity-fill"
+                            style="width:72%;">
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div>
+                    11 Farmers
+                </div>
+
+                <div>
+                    <span class="active">
+                        Active
+                    </span>
+                </div>
+
+            </div>
+
+
+            <div class="table-row">
+
+                <div class="centre-name">
+                    Ashta
+                </div>
+
+                <div>
+
+                    <strong>91%</strong>
+
+                    <div class="capacity-bar">
+
+                        <div
+                            class="capacity-fill"
+                            style="width:91%;">
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div>
+                    24 Farmers
+                </div>
+
+                <div>
+                    <span class="high-load">
+                        High Load
+                    </span>
+                </div>
+
+            </div>
+
+
+            <div class="actions">
+
+                <button
+                    class="action-btn primary"
+                    onclick="refreshDashboard()">
+                    Refresh Data
+                </button>
+
+                <button
+                    class="action-btn secondary"
+                    onclick="viewReport()">
+                    View Report
+                </button>
+
+            </div>
+
+            <div
+                class="message"
+                id="message">
+            </div>
+
+        </div>
+
+
+        <!-- RIGHT SIDE -->
+
+        <div>
+
+            <!-- PENDING PAYMENTS -->
+
+            <div class="card">
+
+                <h3>Pending Payments</h3>
+
+
+                <div class="payment-item">
+
+                    <div class="payment-top">
+
+                        <strong>
+                            Ramesh Kumar
+                        </strong>
+
+                        <span class="payment-amount">
+                            ₹1,23,375
+                        </span>
+
+                    </div>
+
+                    <p>
+                        Token #42 • Sehore
+                    </p>
+
+                    <span class="pending-payment">
+                        Payment Processing
+                    </span>
+
+                </div>
+
+
+                <div class="payment-item">
+
+                    <div class="payment-top">
+
+                        <strong>
+                            Sunil Verma
+                        </strong>
+
+                        <span class="payment-amount">
+                            ₹98,500
+                        </span>
+
+                    </div>
+
+                    <p>
+                        Token #24 • Sehore
+                    </p>
+
+                    <span class="pending-payment">
+                        Payment Processing
+                    </span>
+
+                </div>
+
+
+                <div class="payment-item">
+
+                    <div class="payment-top">
+
+                        <strong>
+                            Raj Kumar
+                        </strong>
+
+                        <span class="payment-amount">
+                            ₹87,200
+                        </span>
+
+                    </div>
+
+                    <p>
+                        Token #25 • Sehore
+                    </p>
+
+                    <span class="pending-payment">
+                        Payment Pending
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- ACTIVITY -->
+
+            <div class="card activity">
+
+                <h3>Recent Activity</h3>
+
+
+                <div class="activity-item">
+
+                    <div class="activity-dot"></div>
+
+                    <div>
+
+                        <strong>
+                            Token #42 updated
+                        </strong>
+
+                        <p>
+                            Procurement completed
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="activity-item">
+
+                    <div class="activity-dot"></div>
+
+                    <div>
+
+                        <strong>
+                            Token #24 processing
+                        </strong>
+
+                        <p>
+                            Farmer verification completed
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="activity-item">
+
+                    <div class="activity-dot"></div>
+
+                    <div>
+
+                        <strong>
+                            Sehore capacity updated
+                        </strong>
+
+                        <p>
+                            Current utilization: 85%
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+function logout() {
+
+    window.location.href = "index22.html";
+
+}
+
+
+function refreshDashboard() {
+
+    const message =
+        document.getElementById("message");
+
+    message.innerText =
+        "✓ Dashboard data refreshed successfully.";
+
+}
+
+
+function viewReport() {
+
+    const message =
+        document.getElementById("message");
+
+    message.innerText =
+        "Procurement report module will be available in the next version.";
+
+}
+
+</script>
+
+</body>
+</html>

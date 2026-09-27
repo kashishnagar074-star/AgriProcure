@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Book Procurement Slot - AgriProcure</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header class="dashboard-header">
+
+        <div>
+            <h1>AgriProcure</h1>
+            <p>Smart Procurement & Queue Management</p>
+        </div>
+
+        <button class="logout-btn" onclick="logout()">Logout</button>
+
+    </header>
+
+
+    <main class="booking-container">
+
+        <!-- Page Heading -->
+
+        <div class="page-heading">
+
+            <h2>Book Your Procurement Slot</h2>
+
+            <p>
+                Select your crop, procurement centre and preferred time slot.
+            </p>
+
+        </div>
+
+
+        <!-- Booking Card -->
+
+        <section class="booking-card">
+
+            <h3>1. Select Crop</h3>
+
+            <label for="crop">Crop</label>
+
+            <select id="crop">
+
+                <option value="">Select your crop</option>
+
+                <option value="Wheat">Wheat</option>
+
+                <option value="Paddy">Paddy</option>
+
+                <option value="Soybean">Soybean</option>
+
+                <option value="Maize">Maize</option>
+
+            </select>
+
+
+            <h3>2. Select Procurement Centre</h3>
+
+            <label for="centre">Procurement Centre</label>
+
+            <select id="centre">
+
+                <option value="">Select centre</option>
+
+                <option value="Sehore Procurement Centre">
+                    Sehore Procurement Centre
+                </option>
+
+                <option value="Bhopal Procurement Centre">
+                    Bhopal Procurement Centre
+                </option>
+
+                <option value="Ashta Procurement Centre">
+                    Ashta Procurement Centre
+                </option>
+
+            </select>
+
+
+            <h3>3. Select Date</h3>
+
+            <label for="date">Procurement Date</label>
+
+            <input type="date" id="date">
+
+
+            <h3>4. Select Available Slot</h3>
+
+            <div class="slot-container">
+
+                <button type="button" class="slot" onclick="selectSlot(this, '10:00 AM - 11:00 AM')">
+                    <strong>10:00 AM</strong>
+                    <span>8 slots available</span>
+                </button>
+
+
+                <button type="button" class="slot" onclick="selectSlot(this, '11:00 AM - 12:00 PM')">
+                    <strong>11:00 AM</strong>
+                    <span>14 slots available</span>
+                </button>
+
+
+                <button type="button" class="slot" onclick="selectSlot(this, '12:00 PM - 01:00 PM')">
+                    <strong>12:00 PM</strong>
+                    <span>5 slots available</span>
+                </button>
+
+
+                <button type="button" class="slot" onclick="selectSlot(this, '02:00 PM - 03:00 PM')">
+                    <strong>02:00 PM</strong>
+                    <span>10 slots available</span>
+                </button>
+
+            </div>
+
+
+            <!-- Selected Slot -->
+
+            <div class="selected-slot">
+
+                Selected Slot:
+
+                <strong id="selectedSlot">
+                    Not selected
+                </strong>
+
+            </div>
+
+
+            <!-- Confirm -->
+
+            <button class="confirm-booking" onclick="confirmBooking()">
+                Confirm Slot
+            </button>
+
+            <p id="bookingMessage"></p>
+
+        </section>
+
+    </main>
+
+
+    <script src="script.js"></script>
+
+</body>
+</html>

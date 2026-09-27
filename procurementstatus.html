@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Procurement Status - AgriProcure</title>
+</head>
+
+<body style="
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#eef4f1;
+    color:#222;
+">
+
+    <!-- HEADER -->
+    <div style="
+        background:white;
+        padding:20px 7%;
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        border-bottom:1px solid #ddd;
+    ">
+
+        <div>
+            <h1 style="
+                margin:0;
+                color:#176b3a;
+                font-size:40px;
+            ">
+                AgriProcure
+            </h1>
+
+            <p style="
+                margin:5px 0 0;
+                color:#777;
+            ">
+                Smart Procurement & Queue Management
+            </p>
+        </div>
+
+        <button onclick="logout()" style="
+            background:#176b3a;
+            color:white;
+            border:none;
+            padding:13px 25px;
+            border-radius:8px;
+            font-size:16px;
+            font-weight:bold;
+            cursor:pointer;
+        ">
+            Logout
+        </button>
+
+    </div>
+
+
+    <!-- MAIN -->
+    <div style="
+        width:86%;
+        max-width:950px;
+        margin:40px auto;
+    ">
+
+        <!-- HEADING -->
+        <div style="margin-bottom:25px;">
+
+            <h2 style="
+                font-size:30px;
+                margin:0 0 8px;
+            ">
+                Procurement Status
+            </h2>
+
+            <p style="
+                color:#777;
+                margin:0;
+            ">
+                Track your crop from verification to payment.
+            </p>
+
+        </div>
+
+
+        <!-- FARMER SUMMARY -->
+        <div style="
+            background:white;
+            border:1px solid #ddd;
+            border-radius:16px;
+            padding:25px;
+            margin-bottom:20px;
+        ">
+
+            <h3 style="margin-top:0;">
+                Procurement Details
+            </h3>
+
+            <div style="
+                display:grid;
+                grid-template-columns:repeat(3,1fr);
+                gap:15px;
+            ">
+
+                <div style="
+                    background:#f6f8f7;
+                    padding:15px;
+                    border-radius:10px;
+                ">
+                    <small style="color:#777;">Farmer</small>
+                    <strong style="display:block;margin-top:6px;">
+                        Ramesh Kumar
+                    </strong>
+                </div>
+
+                <div style="
+                    background:#f6f8f7;
+                    padding:15px;
+                    border-radius:10px;
+                ">
+                    <small style="color:#777;">Crop</small>
+                    <strong style="display:block;margin-top:6px;">
+                        Wheat
+                    </strong>
+                </div>
+
+                <div style="
+                    background:#f6f8f7;
+                    padding:15px;
+                    border-radius:10px;
+                ">
+                    <small style="color:#777;">Token</small>
+                    <strong style="display:block;margin-top:6px;">
+                        #42
+                    </strong>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- STATUS TIMELINE -->
+        <div style="
+            background:white;
+            border:1px solid #ddd;
+            border-radius:16px;
+            padding:30px;
+        ">
+
+            <h3 style="
+                margin-top:0;
+                margin-bottom:30px;
+            ">
+                Procurement Journey
+            </h3>
+
+
+            <!-- STEP 1 -->
+            <div style="
+                display:flex;
+                gap:20px;
+                position:relative;
+                padding-bottom:30px;
+            ">
+
+                <div style="
+                    min-width:42px;
+                    height:42px;
+                    border-radius:50%;
+                    background:#176b3a;
+                    color:white;
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    font-weight:bold;
+                ">
+                    ✓
+                </div>
+
+                <div>
+                    <strong>Slot Booked</strong>
+
+                    <p style="
+                        margin:6px 0;
+                        color:#777;
+                    ">
+                        Your procurement slot has been confirmed.
+                    </p>
+
+                    <small style="color:#176b3a;">
+                        11:00 AM - 12:00 PM
+                    </small>
+                </div>
+
+            </div>
+
+
+            <!-- STEP 2 -->
+            <div style="
+                display:flex;
+                gap:20px;
+                position:relative;
+                padding-bottom:30px;
+            ">
+
+                <div style="
+                    min-width:42px;
+                    height:42px;
+                    border-radius:50%;
+                    background:#176b3a;
+                    color:white;
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    font-weight:bold;
+                ">
+                    ✓
+                </div>
+
+                <div>
+                    <strong>Farmer Verification</strong>
+
+                    <p style="
+                        margin:6px 0;
+                        color:#777;
+                    ">
+                        Farmer and booking details verified.
+                    </p>
+
+                    <small style="color:#176b3a;">
+                        Completed
+                    </small>
+                </div>
+
+            </div>
+
+
+            <!-- STEP 3 ACTIVE -->
+            <div style="
+                display:flex;
+                gap:20px;
+                position:relative;
+                padding-bottom:30px;
+            ">
+
+                <div style="
+                    min-width:42px;
+                    height:42px;
+                    border-radius:50%;
+                    background:#176b3a;
+                    color:white;
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    font-weight:bold;
+                ">
+                    ●
+                </div>
+
+                <div>
+                    <strong>Crop Reception</strong>
+
+                    <p style="
+                        margin:6px 0;
+                        color:#777;
+                    ">
+                        Your crop is ready for reception at the centre.
+                    </p>
+
+                    <small style="color:#176b3a;">
+                        Current Stage
+                    </small>
+                </div>
+
+            </div>
+
+
+            <!-- STEP 4 -->
+            <div style="
+                display:flex;
+                gap:20px;
+                position:relative;
+                padding-bottom:30px;
+            ">
+
+                <div style="
+                    min-width:42px;
+                    height:42px;
+                    border-radius:50%;
+                    background:#edf0ee;
+                    color:#888;
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    font-weight:bold;
+                ">
+                    4
+                </div>
+
+                <div>
+                    <strong>Quality Check</strong>
+
+                    <p style="
+                        margin:6px 0;
+                        color:#777;
+                    ">
+                        Quality verification will be performed.
+                    </p>
+
+                    <small style="color:#999;">
+                        Pending
+                    </small>
+                </div>
+
+            </div>
+
+
+            <!-- STEP 5 -->
+            <div style="
+                display:flex;
+                gap:20px;
+                position:relative;
+                padding-bottom:30px;
+            ">
+
+                <div style="
+                    min-width:42px;
+                    height:42px;
+                    border-radius:50%;
+                    background:#edf0ee;
+                    color:#888;
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    font-weight:bold;
+                ">
+                    5
+                </div>
+
+                <div>
+                    <strong>Weighing</strong>
+
+                    <p style="
+                        margin:6px 0;
+                        color:#777;
+                    ">
+                        Crop quantity will be recorded.
+                    </p>
+
+                    <small style="color:#999;">
+                        Pending
+                    </small>
+                </div>
+
+            </div>
+
+
+            <!-- STEP 6 -->
+            <div style="
+                display:flex;
+                gap:20px;
+                position:relative;
+                padding-bottom:30px;
+            ">
+
+                <div style="
+                    min-width:42px;
+                    height:42px;
+                    border-radius:50%;
+                    background:#edf0ee;
+                    color:#888;
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    font-weight:bold;
+                ">
+                    6
+                </div>
+
+                <div>
+                    <strong>Procurement Completed</strong>
+
+                    <p style="
+                        margin:6px 0;
+                        color:#777;
+                    ">
+                        Crop procurement will be completed after verification.
+                    </p>
+
+                    <small style="color:#999;">
+                        Pending
+                    </small>
+                </div>
+
+            </div>
+
+
+            <!-- STEP 7 -->
+            <div style="
+                display:flex;
+                gap:20px;
+                position:relative;
+                padding-bottom:30px;
+            ">
+
+                <div style="
+                    min-width:42px;
+                    height:42px;
+                    border-radius:50%;
+                    background:#edf0ee;
+                    color:#888;
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    font-weight:bold;
+                ">
+                    7
+                </div>
+
+                <div>
+                    <strong>Bill Generated</strong>
+
+                    <p style="
+                        margin:6px 0;
+                        color:#777;
+                    ">
+                        Bill of procurement will be generated.
+                    </p>
+
+                    <small style="color:#999;">
+                        Pending
+                    </small>
+                </div>
+
+            </div>
+
+
+            <!-- STEP 8 -->
+            <div style="
+                display:flex;
+                gap:20px;
+            ">
+
+                <div style="
+                    min-width:42px;
+                    height:42px;
+                    border-radius:50%;
+                    background:#edf0ee;
+                    color:#888;
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    font-weight:bold;
+                ">
+                    8
+                </div>
+
+                <div>
+                    <strong>Payment</strong>
+
+                    <p style="
+                        margin:6px 0;
+                        color:#777;
+                    ">
+                        Payment status will be updated here.
+                    </p>
+
+                    <small style="color:#999;">
+                        Pending
+                    </small>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- PAYMENT PREVIEW -->
+        <div style="
+            background:#fff;
+            border-left:5px solid #176b3a;
+            padding:20px;
+            margin-top:20px;
+            border-radius:8px;
+        ">
+
+            <strong>Payment Status:</strong>
+
+            <span style="color:#777;">
+                Payment information will appear after procurement
+                and bill generation.
+            </span>
+
+        </div>
+
+
+        <!-- BUTTONS -->
+        <div style="
+            display:flex;
+            gap:15px;
+            margin-top:20px;
+        ">
+
+            <button onclick="goQueue()" style="
+                flex:1;
+                padding:15px;
+                border:1px solid #176b3a;
+                border-radius:8px;
+                background:white;
+                color:#176b3a;
+                font-size:16px;
+                font-weight:bold;
+                cursor:pointer;
+            ">
+                Back to Live Queue
+            </button>
+
+            <button onclick="goDashboard()" style="
+                flex:1;
+                padding:15px;
+                border:none;
+                border-radius:8px;
+                background:#176b3a;
+                color:white;
+                font-size:16px;
+                font-weight:bold;
+                cursor:pointer;
+            ">
+                Go to Dashboard
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+function goQueue() {
+    window.location.href = "livequeue.html";
+}
+
+function goDashboard() {
+    window.location.href = "farmer-dashboard.html";
+}
+
+function logout() {
+    window.location.href = "index22.html";
+}
+
+
+// =====================================
+// READ STATUS UPDATED BY OFFICER
+// =====================================
+
+function loadProcurementStatus() {
+
+    const status = localStorage.getItem("procurementStatus");
+
+    // If officer has not updated anything
+    if (!status) {
+        return;
+    }
+
+    const qualityCheck = localStorage.getItem("qualityCheck");
+    const weighing = localStorage.getItem("weighing");
+    const procurement = localStorage.getItem("procurement");
+    const bill = localStorage.getItem("bill");
+    const payment = localStorage.getItem("payment");
+
+    const steps = document.querySelectorAll(".step");
+
+
+    // Step 1 - Slot Booked
+    steps[0].classList.add("completed");
+
+
+    // Step 2 - Farmer Verification
+    steps[1].classList.add("completed");
+
+
+    // Step 3 - Crop Reception
+    steps[2].classList.remove("current");
+    steps[2].classList.add("completed");
+
+
+    // Step 4 - Quality Check
+    if (qualityCheck === "Completed") {
+        steps[3].classList.remove("current");
+        steps[3].classList.add("completed");
+
+        steps[3].querySelector("p").innerText =
+            "Quality check completed successfully.";
+    }
+
+
+    // Step 5 - Weighing
+    if (weighing === "Completed") {
+        steps[4].classList.add("completed");
+
+        steps[4].querySelector("p").innerText =
+            "Crop weighing completed.";
+    }
+
+
+    // Step 6 - Procurement
+    if (procurement === "Completed") {
+        steps[5].classList.add("completed");
+
+        steps[5].querySelector("p").innerText =
+            "Procurement completed successfully.";
+    }
+
+
+    // Step 7 - Bill
+    if (bill === "Generated") {
+        steps[6].classList.add("completed");
+
+        steps[6].querySelector("p").innerText =
+            "Bill of Sale generated successfully.";
+    }
+
+
+    // Step 8 - Payment
+    if (payment === "Processing") {
+        steps[7].classList.remove("pending");
+        steps[7].classList.add("current");
+
+        steps[7].querySelector("p").innerText =
+            "Payment is currently being processed.";
+    }
+}
+
+
+// Load status when page opens
+loadProcurementStatus();
+
+</script>

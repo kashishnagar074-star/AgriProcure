@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Token - AgriProcure</title>
+</head>
+
+<body style="
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#eef4f1;
+    color:#222;
+">
+
+    <!-- HEADER -->
+    <div style="
+        background:white;
+        padding:20px 7%;
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        border-bottom:1px solid #ddd;
+    ">
+
+        <div>
+            <h1 style="
+                margin:0;
+                color:#176b3a;
+                font-size:40px;
+            ">
+                AgriProcure
+            </h1>
+
+            <p style="
+                margin:5px 0 0;
+                color:#777;
+            ">
+                Smart Procurement & Queue Management
+            </p>
+        </div>
+
+        <button onclick="logout()" style="
+            background:#176b3a;
+            color:white;
+            border:none;
+            padding:13px 25px;
+            border-radius:8px;
+            font-size:16px;
+            font-weight:bold;
+            cursor:pointer;
+        ">
+            Logout
+        </button>
+
+    </div>
+
+
+    <!-- MAIN -->
+    <div style="
+        width:86%;
+        max-width:900px;
+        margin:40px auto;
+    ">
+
+
+        <!-- SUCCESS -->
+        <div style="
+            text-align:center;
+            margin-bottom:25px;
+        ">
+
+            <div style="
+                width:55px;
+                height:55px;
+                margin:auto;
+                border-radius:50%;
+                background:#dff2e5;
+                color:#176b3a;
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                font-size:28px;
+                font-weight:bold;
+            ">
+                ✓
+            </div>
+
+            <h2 style="margin:15px 0 8px;">
+                Slot Booked Successfully!
+            </h2>
+
+            <p style="color:#777;">
+                Your digital procurement token has been generated.
+            </p>
+
+        </div>
+
+
+        <!-- TOKEN -->
+        <div style="
+            background:white;
+            padding:35px;
+            border-radius:16px;
+            border:1px solid #ddd;
+            text-align:center;
+        ">
+
+            <p style="
+                color:#777;
+                font-size:13px;
+                font-weight:bold;
+                letter-spacing:1px;
+            ">
+                YOUR TOKEN NUMBER
+            </p>
+
+            <div style="
+                color:#176b3a;
+                font-size:72px;
+                font-weight:bold;
+                margin:10px;
+            ">
+                #42
+            </div>
+
+            <div style="
+                display:inline-block;
+                background:#e7f5eb;
+                color:#176b3a;
+                padding:8px 15px;
+                border-radius:20px;
+                font-size:13px;
+                font-weight:bold;
+            ">
+                ● Booking Confirmed
+            </div>
+
+
+            <!-- DETAILS -->
+            <div style="
+                margin-top:30px;
+                display:grid;
+                grid-template-columns:1fr 1fr;
+                gap:15px;
+                text-align:left;
+            ">
+
+                <div style="
+                    background:#f7f9f8;
+                    padding:16px;
+                    border-radius:10px;
+                ">
+                    <small style="color:#777;">Farmer</small>
+                    <br>
+                  <strong id="farmerName">Ramesh Kumar</strong>  
+                </div>
+
+
+                <div style="
+                    background:#f7f9f8;
+                    padding:16px;
+                    border-radius:10px;
+                ">
+                    <small style="color:#777;">Crop</small>
+                    <br>
+                    <strong id="cropName">Wheat</strong>
+                </div>
+
+
+                <div style="
+                    background:#f7f9f8;
+                    padding:16px;
+                    border-radius:10px;
+                ">
+                    <small style="color:#777;">Procurement Centre</small>
+                    <br>
+                    <strong id="centreName">Sehore Procurement Centre</strong>
+                </div>
+
+
+                <div style="
+                    background:#f7f9f8;
+                    padding:16px;
+                    border-radius:10px;
+                ">
+                    <small style="color:#777;">Date</small>
+                    <br>
+                    <strong id="bookingDate">22 September 2026</strong>
+                </div>
+
+
+                <div style="
+                    background:#f7f9f8;
+                    padding:16px;
+                    border-radius:10px;
+                    grid-column:1 / -1;
+                ">
+                    <small style="color:#777;">Time Slot</small>
+                    <br>
+                    <strong id="slotTime">11:00 AM - 12:00 PM</strong>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- QUEUE -->
+        <div style="
+            background:white;
+            padding:25px;
+            border-radius:16px;
+            border:1px solid #ddd;
+            margin-top:20px;
+        ">
+
+            <h2>Queue Summary</h2>
+
+            <div style="
+                display:grid;
+                grid-template-columns:repeat(4,1fr);
+                gap:12px;
+            ">
+
+                <div style="background:#f5f8f6;padding:18px;border-radius:10px;">
+                    <small style="color:#777;">Current Token</small>
+                    <h2 style="color:#176b3a;">#24</h2>
+                </div>
+
+                <div style="background:#f5f8f6;padding:18px;border-radius:10px;">
+                    <small style="color:#777;">Your Token</small>
+                    <h2 id="yourToken" style="color:#176b3a;">#42</h2>
+                </div>
+                <div style="background:#f5f8f6;padding:18px;border-radius:10px;">
+                    <small style="color:#777;">Farmers Ahead</small>
+                    <h2 style="color:#176b3a;">18</h2>
+                </div>
+
+                <div style="background:#f5f8f6;padding:18px;border-radius:10px;">
+                    <small style="color:#777;">Estimated Wait</small>
+                    <h2 style="color:#176b3a;">70 min</h2>
+                </div>
+
+            </div>
+
+            <p style="
+                margin-top:20px;
+                padding:14px;
+                background:#f7f9f8;
+                border-radius:8px;
+                color:#555;
+            ">
+                <strong>Tip:</strong>
+                You can monitor your queue position in real time.
+            </p>
+
+        </div>
+
+
+        <!-- BUTTONS -->
+        <div style="
+            display:flex;
+            gap:15px;
+            margin-top:20px;
+        ">
+
+            <button onclick="viewLiveQueue()" style="
+                flex:1;
+                padding:15px;
+                border:none;
+                border-radius:8px;
+                background:#176b3a;
+                color:white;
+                font-size:16px;
+                font-weight:bold;
+                cursor:pointer;
+            ">
+                View Live Queue
+            </button>
+
+
+            <button onclick="goDashboard()" style="
+                flex:1;
+                padding:15px;
+                border:1px solid #176b3a;
+                border-radius:8px;
+                background:white;
+                color:#176b3a;
+                font-size:16px;
+                font-weight:bold;
+                cursor:pointer;
+            ">
+                Go to Dashboard
+            </button>
+
+        </div>
+
+    </div>
+
+<script>
+function loadBookingData() {
+
+    const bookingData = localStorage.getItem("bookingData");
+
+    if (!bookingData) {
+        return;
+    }
+
+    const booking = JSON.parse(bookingData);
+
+    document.getElementById("farmerName").innerText = booking.farmer;
+    document.getElementById("cropName").innerText = booking.crop;
+    document.getElementById("centreName").innerText = booking.centre;
+    document.getElementById("bookingDate").innerText = booking.date;
+    document.getElementById("slotTime").innerText = booking.slot;
+    document.getElementById("tokenNumber").innerText = "#" + booking.token;
+}
+
+function viewLiveQueue() {
+    window.location.href = "livequeue.html";
+}
+
+function goDashboard() {
+    window.location.href = "farmer-dashboard.html";
+}
+
+function logout() {
+    window.location.href = "index22.html";
+}
+
+loadBookingData();
+</script>
+    
