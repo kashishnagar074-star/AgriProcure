@@ -1,0 +1,1473 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer Dashboard | AgriProcure</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f3f7f4;
+            color: #26372d;
+        }
+
+        button {
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .dashboard-header {
+            background: #14532d;
+            color: white;
+            padding: 17px 6%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .brand-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-icon {
+            font-size: 34px;
+        }
+
+        .brand-text h1 {
+            font-size: 23px;
+        }
+
+        .brand-text p {
+            font-size: 12px;
+            margin-top: 4px;
+            color: #d7eadc;
+        }
+
+        .logout-btn {
+            background: white;
+            color: #14532d;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 7px;
+            font-weight: bold;
+        }
+
+        .dashboard {
+            max-width: 1200px;
+            width: 92%;
+            margin: auto;
+            padding: 30px 0;
+        }
+
+        .hero {
+            min-height: 290px;
+            background: linear-gradient(120deg, #dcefe0, #f8fbf8);
+            border-radius: 18px;
+            padding: 42px;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #dce9df;
+        }
+
+        .hero::after {
+            content: "🌾";
+            position: absolute;
+            right: 8%;
+            bottom: 15px;
+            font-size: 150px;
+            opacity: .17;
+        }
+
+        .hero-content {
+            max-width: 620px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-label {
+            display: inline-block;
+            background: #d4ead9;
+            color: #176b3a;
+            padding: 8px 13px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            margin-bottom: 17px;
+        }
+
+        .hero h2 {
+            font-size: 34px;
+            color: #17472b;
+            margin-bottom: 13px;
+        }
+
+        .hero p {
+            color: #596b60;
+            line-height: 1.7;
+        }
+
+        .centre-badge {
+            display: inline-block;
+            margin-top: 18px;
+            background: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            color: #176b3a;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        .journey-strip {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+            margin: 20px 0 35px;
+        }
+
+        .journey-mini {
+            background: white;
+            padding: 17px 12px;
+            border-radius: 11px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 3px 12px #00000008;
+        }
+
+        .journey-mini-icon {
+            font-size: 25px;
+        }
+
+        .journey-mini strong {
+            display: block;
+            font-size: 13px;
+            color: #245337;
+        }
+
+        .journey-mini span {
+            font-size: 11px;
+            color: #819087;
+            display: block;
+            margin-top: 4px;
+        }
+
+        .section-title {
+            margin: 32px 0 17px;
+        }
+
+        .section-title h2 {
+            font-size: 22px;
+            color: #19472d;
+        }
+
+        .section-title p {
+            font-size: 13px;
+            color: #78857c;
+            margin-top: 6px;
+        }
+
+        .service-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 14px;
+        }
+
+        .service-card,
+        .action-card,
+        .dashboard-card,
+        .queue-card {
+            background: white;
+            border-radius: 13px;
+            padding: 21px;
+            box-shadow: 0 3px 15px #00000008;
+            border: 1px solid #edf1ed;
+        }
+
+        .service-icon,
+        .action-icon {
+            font-size: 30px;
+            margin-bottom: 13px;
+        }
+
+        .service-card h3,
+        .action-card h3 {
+            font-size: 15px;
+            color: #245337;
+            margin-bottom: 9px;
+        }
+
+        .service-card p,
+        .action-card p {
+            font-size: 12px;
+            color: #7b887f;
+            line-height: 1.6;
+            min-height: 57px;
+        }
+
+        .service-link {
+            border: none;
+            background: transparent;
+            color: #198754;
+            font-weight: bold;
+            font-size: 12px;
+            margin-top: 14px;
+            text-align: left;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .action-card {
+            padding: 24px;
+        }
+
+        .action-card button,
+        .book-slot-button {
+            display: inline-block;
+            background: #198754;
+            color: white;
+            border: none;
+            border-radius: 7px;
+            padding: 11px 15px;
+            margin-top: 17px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .notification {
+            display: flex;
+            gap: 14px;
+            padding: 15px 0;
+            border-bottom: 1px solid #edf1ed;
+        }
+
+        .notification:last-child {
+            border-bottom: none;
+        }
+
+        .notification-icon {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: #e5f4e9;
+            color: #198754;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+            font-weight: bold;
+        }
+
+        .notification strong {
+            font-size: 13px;
+        }
+
+        .notification p {
+            color: #7a887f;
+            font-size: 12px;
+            margin-top: 5px;
+            line-height: 1.6;
+        }
+
+        .queue-card {
+            padding: 25px;
+        }
+
+        .queue-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 23px;
+        }
+
+        .queue-header h2 {
+            color: #19472d;
+            font-size: 19px;
+        }
+
+        .queue-header p {
+            font-size: 12px;
+            color: #87948b;
+            margin-top: 6px;
+        }
+
+        .live-badge {
+            color: #198754;
+            background: #e5f5e9;
+            padding: 8px 13px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .queue-info {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 13px;
+        }
+
+        .queue-stat {
+            background: #f0f7f1;
+            border-radius: 10px;
+            padding: 18px;
+        }
+
+        .queue-stat span {
+            color: #748178;
+            font-size: 12px;
+            display: block;
+        }
+
+        .queue-stat strong {
+            display: block;
+            color: #14532d;
+            font-size: 27px;
+            margin: 12px 0 6px;
+        }
+
+        .queue-stat small {
+            color: #89958d;
+            font-size: 11px;
+        }
+
+        .queue-buttons {
+            display: flex;
+            gap: 12px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .primary-btn,
+        .secondary-btn {
+            border: none;
+            padding: 12px 18px;
+            border-radius: 7px;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .primary-btn {
+            background: #198754;
+            color: white;
+        }
+
+        .secondary-btn {
+            background: #e8f2ea;
+            color: #14532d;
+        }
+
+        .booking-details {
+            border-top: 1px solid #e9eee9;
+            padding-top: 20px;
+        }
+
+        .booking-details h3 {
+            font-size: 15px;
+            color: #245337;
+            margin-bottom: 15px;
+        }
+
+        .booking-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .booking-item {
+            background: #f8faf8;
+            padding: 14px;
+            border-radius: 8px;
+            overflow-wrap: anywhere;
+        }
+
+        .booking-item span {
+            display: block;
+            font-size: 10px;
+            color: #87948b;
+            margin-bottom: 8px;
+        }
+
+        .booking-item strong {
+            font-size: 13px;
+            color: #245337;
+        }
+
+        .queue-status-message {
+            font-size: 12px;
+            margin-top: 15px;
+            color: #198754;
+        }
+
+        .journey-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px solid #edf1ed;
+        }
+
+        .journey-step:last-child {
+            border: none;
+        }
+
+        .step-icon {
+            width: 34px;
+            height: 34px;
+            background: #eef1ef;
+            color: #69756f;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-weight: bold;
+        }
+
+        .journey-step.completed .step-icon {
+            background: #e5f5e9;
+            color: #176b3a;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-content strong {
+            font-size: 14px;
+            color: #245337;
+        }
+
+        .step-content p {
+            font-size: 12px;
+            color: #7b887f;
+            margin-top: 5px;
+        }
+
+        .step-status {
+            float: right;
+            background: #eef1ef;
+            color: #69756f;
+            padding: 5px 9px;
+            border-radius: 15px;
+            font-size: 10px;
+        }
+
+        .journey-step.completed .step-status {
+            background: #e5f5e9;
+            color: #176b3a;
+        }
+
+        .bottom-grid {
+            display: grid;
+            grid-template-columns: 1.4fr 1fr;
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .dashboard-footer {
+            text-align: center;
+            color: #849087;
+            font-size: 11px;
+            padding: 25px;
+        }
+
+        @media(max-width:1050px) {
+            .service-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .journey-strip {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media(max-width:800px) {
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+
+            .queue-info,
+            .booking-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .bottom-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .service-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .hero {
+                padding: 28px;
+            }
+
+            .hero h2 {
+                font-size: 27px;
+            }
+        }
+
+        @media(max-width:550px) {
+            .dashboard-header {
+                padding: 13px 4%;
+            }
+
+            .brand-text p {
+                display: none;
+            }
+
+            .brand-text h1 {
+                font-size: 19px;
+            }
+
+            .dashboard {
+                width: 92%;
+                padding-top: 20px;
+            }
+
+            .hero {
+                min-height: 300px;
+                padding: 23px;
+            }
+
+            .hero h2 {
+                font-size: 24px;
+            }
+
+            .journey-strip {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .service-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .queue-info {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .queue-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .queue-buttons {
+                flex-direction: column;
+            }
+
+            .queue-buttons button {
+                width: 100%;
+            }
+        }
+
+        @media(max-width:380px) {
+            .journey-strip,
+            .service-grid,
+            .queue-info,
+            .booking-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="dashboard-header">
+
+    <div class="brand-area">
+        <div class="brand-icon">🌾</div>
+
+        <div class="brand-text">
+            <h1>AgriProcure</h1>
+            <p>Smart Procurement &amp; Queue Management</p>
+        </div>
+    </div>
+
+    <button class="logout-btn" onclick="logout()">Logout</button>
+
+</header>
+
+<main class="dashboard">
+
+    <!-- HERO -->
+
+    <section class="hero">
+
+        <div class="hero-content">
+
+            <span class="hero-label">FARMER DASHBOARD</span>
+
+            <h2>
+                Welcome, <span id="dashboardFarmer">Farmer</span> 👋
+            </h2>
+
+            <p>
+                Your harvested crop journey — from farm to transparent
+                procurement and timely payment.
+            </p>
+
+            <div class="centre-badge">
+                📍 <span id="dashboardCentre">Procurement Centre</span>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- FARMER JOURNEY -->
+
+    <div class="journey-strip">
+
+        <div class="journey-mini">
+            <div class="journey-mini-icon">🌾</div>
+            <div>
+                <strong>From Farm</strong>
+                <span>Your Harvest</span>
+            </div>
+        </div>
+
+        <div class="journey-mini">
+            <div class="journey-mini-icon">📅</div>
+            <div>
+                <strong>Book Slot</strong>
+                <span>Choose Time</span>
+            </div>
+        </div>
+
+        <div class="journey-mini">
+            <div class="journey-mini-icon">🎟️</div>
+            <div>
+                <strong>Digital Token</strong>
+                <span>Queue Position</span>
+            </div>
+        </div>
+
+        <div class="journey-mini">
+            <div class="journey-mini-icon">⚖️</div>
+            <div>
+                <strong>Procurement</strong>
+                <span>Crop Verification</span>
+            </div>
+        </div>
+
+        <div class="journey-mini">
+            <div class="journey-mini-icon">💳</div>
+            <div>
+                <strong>Direct Payment</strong>
+                <span>Payment Tracking</span>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- SERVICES -->
+
+    <div class="section-title">
+        <h2>Farmer Services</h2>
+        <p>Useful services to make your procurement journey easier.</p>
+    </div>
+
+    <section class="service-grid">
+
+        <div class="service-card">
+            <div>
+                <div class="service-icon">📍</div>
+                <h3>Nearby Centres</h3>
+                <p>Find nearby procurement centres and their availability.</p>
+            </div>
+            <button class="service-link"
+                onclick="navigate('nearby-centres.html')">
+                Explore Centres →
+            </button>
+        </div>
+
+        <div class="service-card">
+            <div>
+                <div class="service-icon">🎤</div>
+                <h3>Voice Assistant</h3>
+                <p>Get procurement information through a voice interface.</p>
+            </div>
+            <button class="service-link"
+                onclick="navigate('voice-assistant.html')">
+                Open Assistant →
+            </button>
+        </div>
+
+        <div class="service-card">
+            <div>
+                <div class="service-icon">🆘</div>
+                <h3>Farmer Help</h3>
+                <p>Get answers to common procurement and booking questions.</p>
+            </div>
+            <button class="service-link"
+                onclick="navigate('farmer-help.html')">
+                Get Help →
+            </button>
+        </div>
+
+        <div class="service-card">
+            <div>
+                <div class="service-icon">🔔</div>
+                <h3>Notifications</h3>
+                <p>View updates about slots, queues and payments.</p>
+            </div>
+            <button class="service-link"
+                onclick="navigate('notifications.html')">
+                View Updates →
+            </button>
+        </div>
+
+        <div class="service-card">
+            <div>
+                <div class="service-icon">👥</div>
+                <h3>Farmer Community</h3>
+                <p>Connect with farmers and share procurement information.</p>
+            </div>
+            <button class="service-link"
+                onclick="navigate('community.html')">
+                Open Community →
+            </button>
+        </div>
+
+    </section>
+
+
+    <!-- QUICK ACTIONS -->
+
+    <div class="section-title">
+        <h2>Quick Actions</h2>
+        <p>Access the most important procurement services.</p>
+    </div>
+
+    <section class="quick-actions">
+
+        <div class="action-card">
+            <div class="action-icon">📅</div>
+            <h3>Book a Slot</h3>
+            <p>Select your crop, centre, date and preferred procurement time.</p>
+            <a href="/book-slot.html" class="book-slot-button">
+                Book Slot →
+            </a>
+        </div>
+
+        <div class="action-card">
+            <div class="action-icon">🎟️</div>
+            <h3>My Token</h3>
+            <p>View your digital token and procurement appointment details.</p>
+            <button onclick="navigate('token.html')">
+                View Token →
+            </button>
+        </div>
+
+        <div class="action-card">
+            <div class="action-icon">💳</div>
+            <h3>Payment Status</h3>
+            <p>Track your procurement payment and transaction progress.</p>
+            <button onclick="navigate('paymentstatus.html')">
+                View Payment →
+            </button>
+        </div>
+
+    </section>
+
+
+    <!-- RECENT UPDATES -->
+
+    <div class="section-title">
+        <h2>Recent Updates</h2>
+        <p>Important updates related to your procurement.</p>
+    </div>
+
+    <section class="dashboard-card">
+
+        <div class="notification-list">
+
+            <div class="notification">
+                <div class="notification-icon">✓</div>
+                <div>
+                    <strong>Slot booking information</strong>
+                    <p id="bookingNotification">
+                        Your procurement appointment information will appear here.
+                    </p>
+                </div>
+            </div>
+
+            <div class="notification">
+                <div class="notification-icon">🔔</div>
+                <div>
+                    <strong>Queue update</strong>
+                    <p>
+                        Token <strong id="notificationToken">--</strong>
+                        at <strong id="notificationCentre">--</strong>
+                        · <span id="notificationSlot">--</span>
+                    </p>
+                </div>
+            </div>
+
+            <div class="notification">
+                <div class="notification-icon">₹</div>
+                <div>
+                    <strong>Payment update</strong>
+                    <p id="paymentNotification">
+                        Payment status will update after procurement processing.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- LIVE QUEUE -->
+
+    <div class="section-title">
+        <h2>Live Procurement Queue</h2>
+        <p>Monitor your position before reaching the procurement centre.</p>
+    </div>
+
+    <section class="queue-card">
+
+        <div class="queue-header">
+
+            <div>
+                <h2 id="queueCentreHeading">Procurement Centre</h2>
+                <p>Live queue information from the server</p>
+            </div>
+
+            <div class="live-badge">● LIVE</div>
+
+        </div>
+
+        <div class="queue-info">
+
+            <div class="queue-stat">
+                <span>Current Token</span>
+                <strong id="dashboardCurrentToken">--</strong>
+                <small>Being processed</small>
+            </div>
+
+            <div class="queue-stat">
+                <span>Your Token</span>
+                <strong id="dashboardToken">--</strong>
+                <small>Your position</small>
+            </div>
+
+            <div class="queue-stat">
+                <span>Farmers Ahead</span>
+                <strong id="dashboardAhead">--</strong>
+                <small>Before your turn</small>
+            </div>
+
+            <div class="queue-stat">
+                <span>Estimated Wait</span>
+                <strong id="dashboardWait">-- min</strong>
+                <small>Approximate</small>
+            </div>
+
+        </div>
+
+        <div class="queue-buttons">
+
+            <button class="primary-btn"
+                onclick="navigate('livequeue.html')">
+                View Live Queue →
+            </button>
+
+            <button class="secondary-btn"
+                onclick="navigate('procurementstatus.html')">
+                Procurement Status →
+            </button>
+
+        </div>
+
+        <div class="booking-details">
+
+            <h3>Your Booking</h3>
+
+            <div class="booking-grid">
+
+                <div class="booking-item">
+                    <span>CROP</span>
+                    <strong id="dashboardCrop">--</strong>
+                </div>
+
+                <div class="booking-item">
+                    <span>CENTRE</span>
+                    <strong id="dashboardCentre2">--</strong>
+                </div>
+
+                <div class="booking-item">
+                    <span>DATE</span>
+                    <strong id="dashboardDate">--</strong>
+                </div>
+
+                <div class="booking-item">
+                    <span>TIME SLOT</span>
+                    <strong id="dashboardSlot2">--</strong>
+                </div>
+
+            </div>
+
+        </div>
+
+        <p class="queue-status-message" id="queueStatusMessage" role="status">
+            Connecting to queue...
+        </p>
+
+    </section>
+
+
+    <!-- PROCUREMENT JOURNEY -->
+
+    <div class="section-title">
+        <h2>Procurement Journey</h2>
+        <p>Track every stage from registration to payment.</p>
+    </div>
+
+    <section class="dashboard-card">
+
+        <div class="journey-step completed">
+            <div class="step-icon">✓</div>
+            <div class="step-content">
+                <span class="step-status">Completed</span>
+                <strong>Farmer Registration</strong>
+                <p>Farmer profile successfully registered.</p>
+            </div>
+        </div>
+
+        <div class="journey-step completed">
+            <div class="step-icon">✓</div>
+            <div class="step-content">
+                <span class="step-status">Confirmed</span>
+                <strong>Slot Booked</strong>
+                <p id="dashboardSlot">Procurement slot confirmed.</p>
+            </div>
+        </div>
+
+        <div class="journey-step completed">
+            <div class="step-icon">✓</div>
+            <div class="step-content">
+                <span class="step-status">Issued</span>
+                <strong>Digital Token</strong>
+                <p>Your token: <strong id="dashboardTokenStatus">--</strong></p>
+            </div>
+        </div>
+
+        <div class="journey-step">
+            <div class="step-icon">4</div>
+            <div class="step-content">
+                <span class="step-status">Pending</span>
+                <strong>Quality Verification</strong>
+                <p id="dashboardQuality">Quality inspection at procurement centre.</p>
+            </div>
+        </div>
+
+        <div class="journey-step">
+            <div class="step-icon">5</div>
+            <div class="step-content">
+                <span class="step-status">Pending</span>
+                <strong>Crop Weighing</strong>
+                <p id="dashboardWeighing">Crop quantity will be recorded.</p>
+            </div>
+        </div>
+
+        <div class="journey-step">
+            <div class="step-icon">6</div>
+            <div class="step-content">
+                <span class="step-status">Pending</span>
+                <strong>Procurement Completed</strong>
+                <p id="dashboardProcurement">Procurement confirmation.</p>
+            </div>
+        </div>
+
+        <div class="journey-step">
+            <div class="step-icon">7</div>
+            <div class="step-content">
+                <span class="step-status">Pending</span>
+                <strong>Bill Generated</strong>
+                <p id="dashboardBill">Procurement bill generation.</p>
+            </div>
+        </div>
+
+        <div class="journey-step">
+            <div class="step-icon">8</div>
+            <div class="step-content">
+                <span class="step-status">Pending</span>
+                <strong>Payment</strong>
+                <p id="dashboardPayment">Payment will be credited after processing.</p>
+            </div>
+        </div>
+
+    </section>
+
+
+    <!-- SUPPORT -->
+
+    <div class="bottom-grid">
+
+        <section class="dashboard-card">
+
+            <div class="section-title" style="margin-top:0">
+                <h2>What happens next?</h2>
+                <p>Keep your token ready when visiting the centre.</p>
+            </div>
+
+            <div class="notification">
+                <div class="notification-icon">📍</div>
+                <div>
+                    <strong>Reach your centre on time</strong>
+                    <p>Visit the selected procurement centre during your booked slot.</p>
+                </div>
+            </div>
+
+            <div class="notification">
+                <div class="notification-icon">📱</div>
+                <div>
+                    <strong>Keep checking your queue</strong>
+                    <p>Monitor the live queue to reduce unnecessary waiting.</p>
+                </div>
+            </div>
+
+        </section>
+
+        <section class="dashboard-card">
+
+            <div class="section-title" style="margin-top:0">
+                <h2>Need Help?</h2>
+                <p>Procurement support</p>
+            </div>
+
+            <div class="notification">
+                <div class="notification-icon">ℹ</div>
+                <div>
+                    <strong>Procurement Centre Support</strong>
+                    <p>Contact the centre officer for verification or booking-related assistance.</p>
+                </div>
+            </div>
+
+            <button class="secondary-btn"
+                onclick="navigate('farmer-help.html')">
+                Get Help →
+            </button>
+
+        </section>
+
+    </div>
+
+</main>
+
+<footer class="dashboard-footer">
+    AgriProcure — Smart Procurement &amp; Queue Management System
+</footer>
+
+
+<script>
+
+    const QUEUE_REFRESH_INTERVAL = 15000;
+
+    let dashboardQueueTimer = null;
+    let dashboardQueueLoading = false;
+
+
+    // NAVIGATION
+
+    function navigate(page) {
+        window.location.href = page;
+    }
+
+
+    // LOGOUT
+
+    function logout() {
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        localStorage.removeItem("bookingData");
+
+        window.location.href = "index22.html";
+    }
+
+
+    // READ USER DETAILS
+
+    function getUserData() {
+
+        try {
+            return JSON.parse(localStorage.getItem("user")) || null;
+        } catch (error) {
+            console.error("User data error:", error);
+            return null;
+        }
+    }
+
+
+    // READ BOOKING DETAILS
+
+    function getBookingData() {
+
+        try {
+            return JSON.parse(localStorage.getItem("bookingData")) || null;
+        } catch (error) {
+            console.error("Booking data error:", error);
+            return null;
+        }
+    }
+
+
+    // GET TOKEN FROM SAVED BOOKING
+
+    function getBookingToken(booking) {
+
+        const possibleTokens = [
+            booking?.token,
+            booking?.booking?.token,
+            booking?.data?.token,
+            booking?.data?.booking?.token
+        ];
+
+        for (const value of possibleTokens) {
+
+            const token = Number(value);
+
+            if (Number.isInteger(token) && token > 0) {
+                return token;
+            }
+        }
+
+        return null;
+    }
+
+
+    // LOAD FARMER AND BOOKING INFORMATION
+
+    async function loadDashboardData() {
+
+    const user = getUserData();
+    const authToken = user?.token || user?.user?.token;
+
+    const message = document.getElementById("queueStatusMessage");
+
+    if (!authToken) {
+        message.textContent = "Please login to view your bookings.";
+        return;
+    }
+
+    try {
+
+        const response = await fetch("/api/bookings", {
+            method: "GET",
+            headers: {
+                "Authorization": "Bearer " + authToken,
+                "Content-Type": "application/json"
+            },
+            cache: "no-store"
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+            throw new Error(data.message || "Unable to load bookings.");
+        }
+
+        const bookings = data.bookings || [];
+
+        if (bookings.length === 0) {
+            message.textContent = "No booking found. Please book a slot first.";
+            document.getElementById("dashboardFarmer").textContent =
+                user?.user?.name || user?.user?.full_name || "Farmer";
+            return;
+        }
+
+        // Latest booking from database
+        const booking = bookings[0];
+
+        // Save database booking for existing queue functionality
+        localStorage.setItem("bookingData", JSON.stringify(booking));
+
+        const farmerName =
+            booking.farmer ||
+            booking.farmer_name ||
+            user?.user?.name ||
+            user?.user?.full_name ||
+            user?.name ||
+            "Farmer";
+
+        const crop = booking.crop || "—";
+        const centre = booking.centre || "Procurement Centre";
+        const date = booking.date || booking.booking_date || "—";
+        const slot = booking.slot || "—";
+        const token = Number(booking.token);
+
+        document.getElementById("dashboardFarmer").textContent = farmerName;
+        document.getElementById("dashboardCentre").textContent = centre;
+        document.getElementById("dashboardCentre2").textContent = centre;
+        document.getElementById("queueCentreHeading").textContent = centre;
+
+        document.getElementById("dashboardCrop").textContent = crop;
+        document.getElementById("dashboardDate").textContent = date;
+        document.getElementById("dashboardSlot2").textContent = slot;
+        document.getElementById("dashboardSlot").textContent = slot;
+
+        document.getElementById("notificationCentre").textContent = centre;
+        document.getElementById("notificationSlot").textContent = slot;
+
+        document.getElementById("bookingNotification").textContent =
+            "Your booking for " + crop + " has been loaded successfully.";
+
+        if (Number.isInteger(token) && token > 0) {
+            document.getElementById("dashboardToken").textContent = "#" + token;
+            document.getElementById("dashboardTokenStatus").textContent = "#" + token;
+            document.getElementById("notificationToken").textContent = "#" + token;
+        }
+
+        // Payment and procurement information
+        const payment = localStorage.getItem("payment");
+
+        document.getElementById("paymentNotification").textContent =
+            payment === "Completed"
+                ? "Your procurement payment has been credited."
+                : payment === "Processing"
+                    ? "Your procurement payment is being processed."
+                    : "Payment status is available on the Payment Status page.";
+
+        document.getElementById("dashboardQuality").textContent =
+            localStorage.getItem("qualityCheck") ||
+            "Quality inspection at procurement centre.";
+
+        document.getElementById("dashboardWeighing").textContent =
+            localStorage.getItem("weighing") ||
+            "Crop quantity will be recorded.";
+
+        document.getElementById("dashboardProcurement").textContent =
+            localStorage.getItem("procurement") ||
+            "Procurement confirmation.";
+
+        document.getElementById("dashboardBill").textContent =
+            localStorage.getItem("bill") ||
+            "Procurement bill generation.";
+
+        document.getElementById("dashboardPayment").textContent =
+            payment || "Payment status can be checked on the Payment Status page.";
+
+        // Start queue only after database booking has loaded
+        startDashboardQueueRefresh();
+
+        console.log("Farmer dashboard booking loaded:", booking);
+
+    } catch (error) {
+
+        console.error("Dashboard data error:", error);
+        message.textContent = "Unable to load dashboard: " + error.message;
+    }
+}
+
+
+    // LOAD LIVE QUEUE FROM DATABASE API
+
+    async function loadDashboardQueue() {
+
+        if (dashboardQueueLoading) return;
+
+        dashboardQueueLoading = true;
+
+        const message =
+            document.getElementById("queueStatusMessage");
+
+        try {
+
+            const booking = getBookingData();
+
+            const token = getBookingToken(booking);
+
+            if (!token) {
+                throw new Error(
+                    "No booking token found. Please book a slot first."
+                );
+            }
+
+            message.style.color = "#647568";
+            message.textContent = "Updating live queue...";
+
+
+            const response = await fetch(
+                `/api/queue?token=${encodeURIComponent(token)}`,
+                {
+                    method: "GET",
+                    cache: "no-store"
+                }
+            );
+
+
+            const data = await response.json();
+
+            if (!response.ok || !data.success) {
+                throw new Error(
+                    data.message || "Unable to load queue information."
+                );
+            }
+
+
+            const queueBooking = data.booking;
+
+            if (!queueBooking) {
+                throw new Error("Booking details not found.");
+            }
+
+
+            // CURRENT TOKEN
+
+            document.getElementById("dashboardCurrentToken").textContent =
+                "#" + data.currentToken;
+
+
+            // YOUR TOKEN
+
+            document.getElementById("dashboardToken").textContent =
+                "#" + data.token;
+
+            document.getElementById("dashboardTokenStatus").textContent =
+                "#" + data.token;
+
+            document.getElementById("notificationToken").textContent =
+                "#" + data.token;
+
+
+            // FARMERS AHEAD
+
+            document.getElementById("dashboardAhead").textContent =
+                data.farmersAhead;
+
+
+            // WAITING TIME
+
+            document.getElementById("dashboardWait").textContent =
+                data.estimatedWaitMinutes + " min";
+
+
+            // BOOKING DETAILS
+
+            document.getElementById("dashboardCrop").textContent =
+                queueBooking.crop || "—";
+
+            document.getElementById("dashboardCentre").textContent =
+                queueBooking.centre || "Procurement Centre";
+
+            document.getElementById("dashboardCentre2").textContent =
+                queueBooking.centre || "—";
+
+            document.getElementById("queueCentreHeading").textContent =
+                queueBooking.centre || "Procurement Centre";
+
+            document.getElementById("dashboardDate").textContent =
+                queueBooking.date || "—";
+
+            document.getElementById("dashboardSlot2").textContent =
+                queueBooking.slot || "—";
+
+            document.getElementById("dashboardSlot").textContent =
+                queueBooking.slot || "Procurement slot confirmed.";
+
+
+            // NOTIFICATIONS
+
+            document.getElementById("notificationCentre").textContent =
+                queueBooking.centre || "Procurement Centre";
+
+            document.getElementById("notificationSlot").textContent =
+                queueBooking.slot || "—";
+
+
+            // SUCCESS MESSAGE
+
+            message.style.color = "#198754";
+
+            message.textContent =
+                "Live queue updated successfully. " +
+                "Next refresh in 15 seconds.";
+
+
+            console.log("Dashboard queue updated:", data);
+
+
+        } catch (error) {
+
+            console.error("Dashboard Queue Error:", error);
+
+            message.style.color = "#b42318";
+
+            message.textContent =
+                "Queue update: " + error.message;
+
+        } finally {
+
+            dashboardQueueLoading = false;
+        }
+    }
+
+
+    // AUTOMATIC REFRESH
+
+    function startDashboardQueueRefresh() {
+
+        loadDashboardQueue();
+
+        if (dashboardQueueTimer) {
+            clearInterval(dashboardQueueTimer);
+        }
+
+        dashboardQueueTimer = setInterval(
+            loadDashboardQueue,
+            QUEUE_REFRESH_INTERVAL
+        );
+    }
+
+
+    // INITIALISE DASHBOARD
+
+    document.addEventListener("DOMContentLoaded", function () {
+    loadDashboardData();
+});
+
+
+    // STOP REFRESH WHEN PAGE CLOSES
+
+    window.addEventListener("beforeunload", function () {
+
+        if (dashboardQueueTimer) {
+            clearInterval(dashboardQueueTimer);
+        }
+
+    });
+
+</script>
+
+<script src="script.js"></script>
+
+</body>
+</html>
+
+
+

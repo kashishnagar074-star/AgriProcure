@@ -1,0 +1,70 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriProcure - Login</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="login-container">
+        <div class="login-card">
+
+            <div class="logo-section">
+                <div class="logo">🌾</div>
+                <h1>AgriProcure</h1>
+                <p>Smart Procurement & Queue Management</p>
+            </div>
+
+            <div class="login-form">
+
+                <h2>Welcome Back</h2>
+                <p class="subtitle">
+                    Login to manage your procurement journey
+                </p>
+
+                <label for="mobile">Mobile Number</label>
+                <input
+                    type="tel"
+                    id="mobile"
+                    placeholder="Enter 10-digit mobile number"
+                    maxlength="10"
+                    inputmode="numeric"
+                    required
+                >
+
+                <label for="role">Login As</label>
+                <select id="role" required>
+                    <option value="farmer">Farmer</option>
+                    <option value="officer">Procurement Officer</option>
+                    <option value="admin">Admin</option>
+                </select>
+
+                <label for="password">Password</label>
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="Enter your password"
+                    required
+                >
+
+                <button type="button" onclick="login()">Login</button>
+
+                <p id="message"></p>
+
+            </div>
+
+            <div class="login-footer">
+                <p>Digital Procurement Platform</p>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+</html>

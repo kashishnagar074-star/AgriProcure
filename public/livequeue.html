@@ -1,0 +1,499 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriProcure - Live Queue</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f7f5;
+            color: #24352c;
+        }
+
+        header {
+            background: #14532d;
+            color: white;
+            padding: 20px 6%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        header h1 {
+            margin: 0;
+        }
+
+        header p {
+            margin-bottom: 0;
+        }
+
+        main {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 0 18px;
+        }
+
+        .card {
+            background: white;
+            padding: 24px;
+            margin-bottom: 22px;
+            border-radius: 14px;
+            box-shadow: 0 4px 15px #0000000d;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .stat {
+            background: #f0f7f1;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .label {
+            color: #647568;
+            margin-bottom: 10px;
+        }
+
+        .value {
+            color: #14532d;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .progress {
+            margin-top: 20px;
+            height: 10px;
+            background: #e5e7eb;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        #progressBar {
+            height: 100%;
+            width: 0;
+            background: #22a05a;
+            transition: width 0.3s ease;
+        }
+
+        .activity {
+            background: #f8faf9;
+            padding: 15px;
+            margin: 12px 0;
+            border-left: 4px solid #198754;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 11px 16px;
+            border: none;
+            border-radius: 7px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 4px;
+        }
+
+        .btn {
+            background: white;
+            color: #14532d;
+        }
+
+        .green {
+            background: #198754;
+            color: white;
+        }
+
+        #queueMessage {
+            color: #647568;
+            overflow-wrap: anywhere;
+        }
+
+        .details {
+            line-height: 1.8;
+            color: #526358;
+        }
+
+        @media (max-width: 550px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div>
+        <h1>AgriProcure</h1>
+        <p>Smart Procurement &amp; Queue Management</p>
+    </div>
+
+    <button class="btn" onclick="goDashboard()">
+        Dashboard
+    </button>
+</header>
+
+<main>
+
+    <section class="card">
+        <h2>Live Queue</h2>
+        <p id="centreName">Procurement Centre</p>
+        <p class="details" id="bookingDetails">
+            Loading booking details...
+        </p>
+    </section>
+
+    <section class="card">
+
+        <h2>Queue Summary</h2>
+
+        <div class="grid">
+
+            <div class="stat">
+                <div class="label">Currently Serving</div>
+                <div class="value" id="currentToken">--</div>
+            </div>
+
+            <div class="stat">
+                <div class="label">Your Token</div>
+                <div class="value" id="yourToken">--</div>
+            </div>
+
+            <div class="stat">
+                <div class="label">Farmers Ahead</div>
+                <div class="value" id="farmersAhead">--</div>
+            </div>
+
+            <div class="stat">
+                <div class="label">Estimated Wait</div>
+                <div class="value" id="waitTime">-- min</div>
+            </div>
+
+        </div>
+
+        <div class="progress">
+            <div id="progressBar"></div>
+        </div>
+
+        <p id="queueMessage" role="status" aria-live="polite">
+            Connecting to live queue...
+        </p>
+
+    </section>
+
+    <section class="card">
+
+        <h2>Centre Information</h2>
+
+        <div class="grid">
+
+            <div class="stat">
+                <div class="label">Centre Capacity</div>
+                <div class="value">85%</div>
+            </div>
+
+            <div class="stat">
+                <div class="label">Avg. Processing</div>
+                <div class="value">4 min</div>
+            </div>
+
+        </div>
+
+    </section>
+
+    <section class="card">
+
+        <h2>Queue Activity</h2>
+
+        <div class="activity" id="completedActivity">
+            Waiting for queue information...
+        </div>
+
+        <div class="activity" id="processingActivity">
+            Current token information will appear here.
+        </div>
+
+        <div class="activity" id="yourTurnActivity">
+            Your turn will appear here.
+        </div>
+
+    </section>
+
+    <section class="card">
+
+        <p>
+            Tip: Monitor your queue position here.
+            Waiting time is a demo estimate.
+        </p>
+
+        <button class="green" onclick="goDashboard()">
+            Back to Dashboard
+        </button>
+
+        <button class="btn" onclick="goStatus()">
+            Procurement Status
+        </button>
+
+    </section>
+
+</main>
+
+<script>
+
+    const API_URL = "/api/queue";
+    const REFRESH_INTERVAL = 15000;
+
+    let refreshTimer = null;
+    let isLoading = false;
+
+    // Get token from saved booking data.
+    function getSavedBookingToken() {
+
+        const savedText = localStorage.getItem("bookingData");
+
+        if (!savedText) {
+            return null;
+        }
+
+        try {
+
+            const saved = JSON.parse(savedText);
+
+            const possibleTokens = [
+                saved?.token,
+                saved?.booking?.token,
+                saved?.data?.token,
+                saved?.data?.booking?.token
+            ];
+
+            for (const value of possibleTokens) {
+
+                const token = Number(value);
+
+                if (Number.isInteger(token) && token > 0) {
+                    return token;
+                }
+            }
+
+            return null;
+
+        } catch (error) {
+
+            console.error("Booking data error:", error);
+            return null;
+        }
+    }
+
+
+    // Load live queue from backend.
+    async function loadLiveQueue() {
+
+        if (isLoading) return;
+
+        isLoading = true;
+
+        const message = document.getElementById("queueMessage");
+
+        try {
+
+            message.style.color = "#647568";
+            message.textContent = "Updating live queue...";
+
+            const token = getSavedBookingToken();
+
+            if (!token) {
+                throw new Error(
+                    "Booking token not found. Please book a slot again."
+                );
+            }
+
+            const response = await fetch(
+                `${API_URL}?token=${encodeURIComponent(token)}`,
+                {
+                    method: "GET",
+                    cache: "no-store"
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok || !data.success) {
+                throw new Error(
+                    data.message || "Unable to load queue."
+                );
+            }
+
+            const booking = data.booking;
+
+            if (!booking) {
+                throw new Error("Booking details not found.");
+            }
+
+            // Update queue values from API.
+
+            const currentToken = Number(data.currentToken);
+            const yourToken = Number(data.token);
+            const ahead = Number(data.farmersAhead);
+            const wait = Number(data.estimatedWaitMinutes);
+
+            document.getElementById("currentToken").textContent =
+                "#" + currentToken;
+
+            document.getElementById("yourToken").textContent =
+                "#" + yourToken;
+
+            document.getElementById("farmersAhead").textContent =
+                ahead;
+
+            document.getElementById("waitTime").textContent =
+                wait + " min";
+
+            // Update booking details.
+
+            document.getElementById("centreName").textContent =
+                booking.centre || "Procurement Centre";
+
+            document.getElementById("bookingDetails").textContent =
+                `Farmer: ${booking.farmer || "N/A"} | ` +
+                `Crop: ${booking.crop || "N/A"} | ` +
+                `Date: ${booking.date || "N/A"} | ` +
+                `Slot: ${booking.slot || "N/A"}`;
+
+            // Progress calculation.
+
+            const progress = yourToken > 0
+                ? Math.min(100, (currentToken / yourToken) * 100)
+                : 0;
+
+            document.getElementById("progressBar").style.width =
+                progress + "%";
+
+            // Queue activity.
+
+            document.getElementById("completedActivity").textContent =
+                currentToken > 1
+                    ? `Token #${currentToken - 1} completed`
+                    : "Queue has started.";
+
+            document.getElementById("processingActivity").textContent =
+                data.status === "Now serving"
+                    ? `Your Token #${yourToken} is now being served.`
+                    : `Currently processing Token #${currentToken}`;
+
+            const yourTurnActivity =
+                document.getElementById("yourTurnActivity");
+
+            if (data.status === "Waiting") {
+
+                yourTurnActivity.textContent =
+                    `Your turn: Token #${yourToken}. ` +
+                    `${ahead} farmers ahead of you.`;
+
+            } else if (data.status === "Now serving") {
+
+                yourTurnActivity.textContent =
+                    "It's your turn! Please proceed to the counter.";
+
+            } else {
+
+                yourTurnActivity.textContent =
+                    "Your token has already been served.";
+            }
+
+            message.style.color = "#198754";
+
+            message.textContent =
+                "Live queue updated successfully. " +
+                "Next update in 15 seconds.";
+
+        } catch (error) {
+
+            console.error("Live Queue Error:", error);
+
+            message.style.color = "#b42318";
+            message.textContent = "Error: " + error.message;
+
+        } finally {
+
+            isLoading = false;
+        }
+    }
+
+
+    // Start automatic queue refresh.
+    function startQueueRefresh() {
+
+        loadLiveQueue();
+
+        if (refreshTimer) {
+            clearInterval(refreshTimer);
+        }
+
+        refreshTimer = setInterval(
+            loadLiveQueue,
+            REFRESH_INTERVAL
+        );
+    }
+
+
+    // Dashboard navigation.
+    function goDashboard() {
+
+        let user = null;
+
+        try {
+            user = JSON.parse(localStorage.getItem("user"));
+        } catch (error) {
+            user = null;
+        }
+
+        const role = user?.role || "farmer";
+
+        if (role === "admin") {
+            window.location.href = "admin-dashboard.html";
+        } else if (role === "officer") {
+            window.location.href = "officer-dashboard.html";
+        } else {
+            window.location.href = "farmer-dashboard.html";
+        }
+    }
+
+
+    // Procurement status navigation.
+    function goStatus() {
+        window.location.href = "procurementstatus.html";
+    }
+
+
+    // Start when page loads.
+    document.addEventListener("DOMContentLoaded", startQueueRefresh);
+
+
+    // Stop refresh when leaving page.
+    window.addEventListener("beforeunload", () => {
+
+        if (refreshTimer) {
+            clearInterval(refreshTimer);
+        }
+
+    });
+
+</script>
+
+</body>
+</html>
+

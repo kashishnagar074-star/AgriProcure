@@ -1,0 +1,330 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgriProcure | Admin Dashboard</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:#f3f7f4;color:#24352b}
+header{background:#14532d;color:white;padding:18px 5%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+header h1{font-size:24px}
+header p{font-size:13px;margin-top:5px;color:#d1fae5}
+.actions{display:flex;gap:10px}
+button{border:0;border-radius:7px;padding:11px 16px;cursor:pointer;font-weight:bold}
+.refresh{background:#dcfce7;color:#14532d}
+.report{background:white;color:#14532d}
+main{max-width:1250px;margin:28px auto;padding:0 18px}
+.heading{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:20px}
+.heading h2{font-size:24px}
+#lastUpdated{font-size:12px;color:#64748b}
+#message{display:none;padding:13px;border-radius:8px;margin-bottom:18px;overflow-wrap:anywhere}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:25px}
+.stat,.section{background:white;border:1px solid #e2e8e4;border-radius:12px;box-shadow:0 3px 12px #00000008}
+.stat{padding:20px}
+.stat p{font-size:13px;color:#64748b;margin-bottom:12px}
+.stat h2{font-size:30px;color:#14532d}
+.section{padding:21px;margin-bottom:22px}
+.section h3{font-size:18px;margin-bottom:17px;color:#14532d}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:600px}
+th,td{text-align:left;padding:13px 12px;border-bottom:1px solid #edf1ed;font-size:13px}
+th{background:#f0f7f1;color:#355b42}
+.empty{text-align:center;color:#64748b;padding:22px}
+.status{padding:5px 9px;border-radius:20px;font-size:11px;font-weight:bold;background:#fef3c7;color:#92400e}
+.activity{padding:14px 0;border-bottom:1px solid #edf1ed}
+.activity:last-child{border:0}
+.activity p{font-size:13px;color:#64748b;margin-top:5px}
+.activity small{font-size:11px;color:#94a3b8}
+footer{text-align:center;color:#94a3b8;padding:20px;font-size:12px}
+@media(max-width:600px){header h1{font-size:20px}.section{padding:15px}}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div>
+        <h1>🌾 AgriProcure</h1>
+        <p>Smart Procurement & Queue Management | Admin Panel</p>
+    </div>
+    <div class="actions">
+        <button class="refresh" onclick="loadDashboard()">↻ Refresh</button>
+        <button class="report" onclick="window.print()">View Report</button>
+    </div>
+</header>
+
+<main>
+
+    <div class="heading">
+        <h2>Admin Dashboard</h2>
+        <span id="lastUpdated">Connecting...</span>
+    </div>
+
+    <div id="message"></div>
+
+    <div class="stats">
+        <div class="stat">
+            <p>Total Registered Farmers</p>
+            <h2 id="farmers">—</h2>
+        </div>
+        <div class="stat">
+            <p>Today's Bookings</p>
+            <h2 id="today">—</h2>
+        </div>
+        <div class="stat">
+            <p>Active Centre Queues</p>
+            <h2 id="queues">—</h2>
+        </div>
+        <div class="stat">
+            <p>Payments Credited</p>
+            <h2 id="completed">—</h2>
+        </div>
+        <div class="stat">
+            <p>Pending Payments</p>
+            <h2 id="pending">—</h2>
+        </div>
+    </div>
+
+    <section class="section">
+        <h3>📍 Procurement Centre Overview</h3>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Procurement Centre</th>
+                        <th>Total Bookings</th>
+                        <th>Active Bookings</th>
+                    </tr>
+                </thead>
+                <tbody id="centres">
+                    <tr><td colspan="3" class="empty">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="section">
+        <h3>💳 Outstanding Payments</h3>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Farmer</th>
+                        <th>Token</th>
+                        <th>Centre</th>
+                        <th>Bill Amount</th>
+                        <th>Payment Status</th>
+                    </tr>
+                </thead>
+                <tbody id="payments">
+                    <tr><td colspan="5" class="empty">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="section">
+        <h3>🕒 Recent Procurement Activity</h3>
+        <div id="activities">
+            <p class="empty">Loading activities...</p>
+        </div>
+    </section>
+
+</main>
+
+<footer>AgriProcure Admin Panel | Database-connected demonstration</footer>
+
+<script>
+
+function getSession(){
+    const keys=["user","currentUser","authUser","adminUser"];
+
+    for(const key of keys){
+        try{
+            const value=JSON.parse(localStorage.getItem(key)||"null");
+            if(value) return value;
+        }catch(error){}
+    }
+
+    return null;
+}
+
+function getToken(session){
+    return session?.token ||
+           session?.accessToken ||
+           session?.data?.token ||
+           session?.user?.token ||
+           null;
+}
+
+function getRole(session){
+    const possibleRoles=[
+        session?.role,
+        session?.user?.role,
+        session?.data?.role,
+        session?.data?.user?.role,
+        session?.user?.user?.role
+    ];
+
+    return possibleRoles.find(role=>typeof role==="string")?.toLowerCase() || "";
+}
+
+function escapeHTML(value){
+    return String(value ?? "").replace(/[&<>"']/g,char=>({
+        "&":"&amp;",
+        "<":"&lt;",
+        ">":"&gt;",
+        '"':"&quot;",
+        "'":"&#39;"
+    })[char]);
+}
+
+function money(value){
+    return "₹"+Number(value||0).toLocaleString("en-IN",{
+        maximumFractionDigits:2
+    });
+}
+
+function showMessage(message,type="error"){
+    const box=document.getElementById("message");
+    box.style.display="block";
+    box.style.background=type==="error"?"#fee2e2":"#dcfce7";
+    box.style.color=type==="error"?"#991b1b":"#166534";
+    box.textContent=message;
+}
+
+async function loadDashboard(){
+
+    const session=getSession();
+    const token=getToken(session);
+    const role=getRole(session);
+
+    if(!session || !token){
+        showMessage("Login session or authentication token not found. Please login again as Admin.");
+        return;
+    }
+
+    if(role!=="admin"){
+        showMessage(
+            "Admin access required. Current saved role: "+
+            (role||"Not found")+
+            ". Please logout and login using your Admin account."
+        );
+        return;
+    }
+
+    const refreshButton=document.querySelector(".refresh");
+    refreshButton.disabled=true;
+    refreshButton.textContent="Loading...";
+
+    try{
+
+        const response=await fetch("/api/admin/summary",{
+            method:"GET",
+            headers:{
+                "Authorization":"Bearer "+token,
+                "Accept":"application/json"
+            }
+        });
+
+        const data=await response.json();
+
+        if(!response.ok){
+            throw new Error(data.message||"Admin API request failed. Status: "+response.status);
+        }
+
+        if(!data.success){
+            throw new Error(data.message||"Unable to load dashboard data.");
+        }
+
+        // Statistics
+        const stats=data.stats||data.summary||{};
+
+        document.getElementById("farmers").textContent=
+            Number(stats.total_farmers||0).toLocaleString("en-IN");
+
+        document.getElementById("today").textContent=
+            Number(stats.todays_bookings||0).toLocaleString("en-IN");
+
+        document.getElementById("queues").textContent=
+            Number(stats.active_queues||0).toLocaleString("en-IN");
+
+        document.getElementById("completed").textContent=
+            Number(stats.completed||0).toLocaleString("en-IN");
+
+        document.getElementById("pending").textContent=
+            Number(stats.pending_payments||0).toLocaleString("en-IN");
+
+        // Procurement centres
+        const centres=data.centres||[];
+
+        document.getElementById("centres").innerHTML=
+            centres.length
+            ? centres.map(c=>`
+                <tr>
+                    <td>${escapeHTML(c.centre)}</td>
+                    <td>${escapeHTML(c.total_bookings)}</td>
+                    <td><span class="status">${escapeHTML(c.active_bookings)}</span></td>
+                </tr>
+            `).join("")
+            : '<tr><td colspan="3" class="empty">No centre records found.</td></tr>';
+
+        // Outstanding payments
+        const payments=data.pendingPayments||data.pending_payments||[];
+
+        document.getElementById("payments").innerHTML=
+            payments.length
+            ? payments.map(p=>`
+                <tr>
+                    <td>${escapeHTML(p.farmer)}</td>
+                    <td>#${escapeHTML(p.token)}</td>
+                    <td>${escapeHTML(p.centre)}</td>
+                    <td>${money(p.bill_amount)}</td>
+                    <td><span class="status">${escapeHTML(p.payment_status)}</span></td>
+                </tr>
+            `).join("")
+            : '<tr><td colspan="5" class="empty">No outstanding payments found.</td></tr>';
+
+        // Recent activities
+        const activities=data.activities||[];
+
+        document.getElementById("activities").innerHTML=
+            activities.length
+            ? activities.map(a=>`
+                <div class="activity">
+                    <strong>${escapeHTML(a.title)}</strong>
+                    <p>${escapeHTML(a.description)}</p>
+                    <small>
+                        Token #${escapeHTML(a.token)}
+                        · ${escapeHTML(a.farmer)}
+                        · ${escapeHTML(a.centre)}
+                    </small>
+                </div>
+            `).join("")
+            : '<p class="empty">No recent activity found.</p>';
+
+        document.getElementById("lastUpdated").textContent=
+            "Last updated: "+new Date().toLocaleString("en-IN");
+
+        document.getElementById("message").style.display="none";
+
+    }catch(error){
+
+        console.error("Admin Dashboard Error:",error);
+        showMessage(error.message||"Unable to connect to server.");
+
+    }finally{
+
+        refreshButton.disabled=false;
+        refreshButton.textContent="↻ Refresh";
+
+    }
+}
+
+loadDashboard();
+
+</script>
+</body>
+</html>

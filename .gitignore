@@ -1,0 +1,16 @@
+node_modules/
+.env
+# Database backups
+*.dump
+*.sql
+
+# Local backup files
+*-backup-*
+*.bak
+
+# Temporary test files
+test-db.js
+
+# Ignore archived HTML files in public
+public/*backup*.html
+public/*before*.html

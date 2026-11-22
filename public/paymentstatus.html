@@ -1,0 +1,378 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Payment Status | AgriProcure</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
+body{background:#f2f6f3;color:#24352b}
+header{background:#176b3a;color:white;padding:18px 6%;display:flex;justify-content:space-between;align-items:center;gap:15px}
+header h1{font-size:27px}
+header p{font-size:13px;margin-top:5px}
+button{cursor:pointer;font-weight:bold;border:0;border-radius:8px;padding:12px 18px}
+.logout{background:white;color:#176b3a}
+.container{max-width:1050px;width:92%;margin:35px auto}
+.page-title{margin-bottom:24px}
+.page-title h2{color:#123b27;font-size:28px}
+.page-title p{color:#718078;margin-top:7px}
+.card{background:white;border:1px solid #e0e9e3;border-radius:14px;padding:25px;margin-bottom:22px;box-shadow:0 4px 15px rgba(0,0,0,.025)}
+.card h3{color:#176b3a;margin-bottom:20px;font-size:20px}
+.details{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}
+.detail-box{background:#f5f8f6;border-radius:9px;padding:16px;overflow-wrap:anywhere}
+.detail-box span,.payment-detail span{display:block;font-size:12px;color:#718078;margin-bottom:8px}
+.detail-box strong,.payment-detail strong{font-size:15px}
+.payment-header{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:22px}
+.payment-header h3{margin:0}
+.status{display:inline-block;padding:9px 15px;border-radius:25px;font-size:12px;font-weight:bold;background:#fff4d6;color:#946200}
+.amount{text-align:center;padding:27px 15px;background:#f0f7f2;border-radius:12px;margin-bottom:25px}
+.amount p{color:#718078;font-size:14px}
+.amount h2{font-size:37px;color:#176b3a;margin-top:10px}
+.amount .note{display:block;color:#718078;font-size:12px;margin-top:10px}
+.payment-details{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.payment-detail{padding:12px 0;border-bottom:1px solid #e5ebe7;overflow-wrap:anywhere}
+.timeline{padding-left:28px;position:relative}
+.timeline:before{content:"";position:absolute;left:7px;top:7px;bottom:12px;width:2px;background:#dce5df}
+.step{position:relative;margin-bottom:27px}
+.circle{position:absolute;left:-28px;top:1px;width:16px;height:16px;border-radius:50%;background:#d1d9d3;border:3px solid white;box-shadow:0 0 0 1px #d1d9d3}
+.step.completed .circle{background:#176b3a;box-shadow:0 0 0 1px #176b3a}
+.step.current .circle{background:#e6a328;box-shadow:0 0 0 1px #e6a328}
+.step h4{font-size:15px;margin-bottom:5px}
+.step p{color:#718078;font-size:13px;line-height:1.5}
+.notice{padding:15px;background:#f5f8f6;border-radius:9px;color:#526359;line-height:1.6;font-size:13px;margin-top:18px}
+.buttons{display:flex;gap:12px;margin-top:20px;flex-wrap:wrap}
+.back{background:#e7eee9;color:#176b3a}
+.dashboard{background:#176b3a;color:white}
+#errorMessage{color:#b42318;margin-bottom:15px;text-align:center}
+#bookingSelector{width:100%;padding:13px;margin-top:12px;border:1px solid #cbd8ce;border-radius:9px;background:white;font-size:15px;color:#24352b}
+@media(max-width:700px){
+header{padding:15px 4%}
+header h1{font-size:22px}
+.details{grid-template-columns:1fr 1fr}
+.payment-details{grid-template-columns:1fr}
+.payment-header{align-items:flex-start;flex-direction:column}
+.amount h2{font-size:30px}
+.buttons{flex-direction:column}
+.buttons button{width:100%}
+}
+@media(max-width:420px){.details{grid-template-columns:1fr}}
+@media print{
+header button,.buttons,#bookingSelector{display:none}
+body{background:white}
+.container{width:100%;margin:10px auto}
+.card{box-shadow:none;break-inside:avoid}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div>
+<h1>&#127806; AgriProcure</h1>
+<p>Smart Procurement &amp; Queue Management</p>
+</div>
+<button class="logout" onclick="logout()">Logout</button>
+</header>
+
+<main class="container">
+
+<div class="page-title">
+<h2>Payment Status</h2>
+<p>Track your crop procurement payment and transaction progress.</p>
+</div>
+
+<label for="bookingSelector"><strong>Select Your Booking</strong></label>
+<select id="bookingSelector" disabled>
+<option>Loading bookings...</option>
+</select>
+
+<section class="card">
+<h3>Procurement Details</h3>
+<div class="details">
+<div class="detail-box"><span>Farmer Name</span><strong id="farmerName">Loading...</strong></div>
+<div class="detail-box"><span>Crop</span><strong id="cropName">Loading...</strong></div>
+<div class="detail-box"><span>Token Number</span><strong id="tokenNumber">Loading...</strong></div>
+<div class="detail-box"><span>Procurement Centre</span><strong id="centreName">Loading...</strong></div>
+<div class="detail-box"><span>Quantity Procured</span><strong id="quantity">Not recorded</strong></div>
+<div class="detail-box"><span>Procurement Date</span><strong id="procurementDate">Not recorded</strong></div>
+</div>
+</section>
+
+<section class="card">
+<div class="payment-header">
+<h3>Payment Information</h3>
+<span class="status" id="paymentStatus">LOADING</span>
+</div>
+
+<div class="amount">
+<p>Total Procurement Amount</p>
+<h2 id="totalAmount">Not calculated</h2>
+<span class="note" id="amountNote">Waiting for procurement records.</span>
+</div>
+
+<div class="payment-details">
+<div class="payment-detail"><span>Rate per Kg</span><strong id="rate">Not available</strong></div>
+<div class="payment-detail"><span>Verified Quantity</span><strong id="verifiedQuantity">Not available</strong></div>
+<div class="payment-detail"><span>Bill Number</span><strong id="billNumber">Not generated</strong></div>
+<div class="payment-detail"><span>Payment Mode</span><strong id="paymentMode">Not recorded</strong></div>
+<div class="payment-detail"><span>Transaction Reference</span><strong id="transactionId">Not generated</strong></div>
+<div class="payment-detail"><span>Payment Date</span><strong id="paymentDate">Not available</strong></div>
+</div>
+
+<div class="notice" id="paymentNotice">
+Payment details will appear after procurement processing.
+</div>
+</section>
+
+<section class="card">
+<h3>Procurement &amp; Payment Timeline</h3>
+<div class="timeline">
+<div class="step completed" id="stepBooking"><div class="circle"></div><h4>Slot Booking</h4><p>Procurement appointment booked.</p></div>
+<div class="step" id="stepQuality"><div class="circle"></div><h4>Quality Verification</h4><p id="qualityDescription">Awaiting quality inspection.</p></div>
+<div class="step" id="stepWeighing"><div class="circle"></div><h4>Crop Weighing</h4><p id="weighingDescription">Awaiting verified quantity.</p></div>
+<div class="step" id="stepBill"><div class="circle"></div><h4>Bill Generation</h4><p id="billDescription">Bill not generated.</p></div>
+<div class="step" id="stepPayment"><div class="circle"></div><h4>Payment Processing</h4><p id="paymentDescription">Payment pending.</p></div>
+<div class="step" id="stepCompleted"><div class="circle"></div><h4>Payment Credited</h4><p id="paymentCompletedDescription">Awaiting payment credit.</p></div>
+</div>
+</section>
+
+<p id="errorMessage"></p>
+
+<div class="buttons">
+<button class="back" onclick="goStatus()">Back to Procurement Status</button>
+<button class="dashboard" onclick="goDashboard()">Go to Dashboard</button>
+<button class="back" onclick="window.print()">Print Payment Details</button>
+</div>
+
+</main>
+
+<script>
+const API_URL = "/api/farmer/procurement";
+
+let farmerBookings = [];
+let selectedBooking = null;
+
+function getAuthToken(){
+    try{
+        const user = JSON.parse(localStorage.getItem("user"));
+        return user?.token || localStorage.getItem("token");
+    }catch{
+        return localStorage.getItem("token");
+    }
+}
+
+function setText(id,value,fallback="Not available"){
+    const el=document.getElementById(id);
+    el.textContent=value!==null && value!==undefined && value!==""
+        ? value : fallback;
+}
+
+function money(value){
+    if(value===null || value===undefined || value==="") return null;
+    const n=Number(value);
+    if(!Number.isFinite(n)) return null;
+    return "\u20B9"+n.toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});
+}
+
+function dateText(value){
+    if(!value) return "Not available";
+    const d=new Date(value);
+    if(Number.isNaN(d.getTime())) return String(value);
+    return d.toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"});
+}
+
+function norm(value){
+    return String(value||"").trim().toLowerCase();
+}
+
+function setStep(id,done,current=false){
+    const el=document.getElementById(id);
+    el.classList.remove("completed","current");
+    if(done) el.classList.add("completed");
+    else if(current) el.classList.add("current");
+}
+
+function renderBookingSelector(){
+    const selector=document.getElementById("bookingSelector");
+    selector.innerHTML="";
+
+    farmerBookings.forEach(b=>{
+        const option=document.createElement("option");
+        option.value=String(b.booking_id);
+        option.textContent=`Token #${b.token} | ${b.crop} | ${b.payment_status||"Pending"}`;
+        selector.appendChild(option);
+    });
+
+    selector.disabled=false;
+    selector.value=String(selectedBooking.booking_id);
+}
+
+function renderPayment(){
+    if(!selectedBooking) return;
+    const b=selectedBooking;
+
+    setText("farmerName",b.farmer_name);
+    setText("cropName",b.crop);
+    setText("tokenNumber",b.token!=null?"#"+b.token:null);
+    setText("centreName",b.centre);
+    setText("procurementDate",dateText(b.booking_date));
+
+    const weight=b.net_weight!=null ? Number(b.net_weight) : null;
+    const rate=b.procurement_rate!=null ? Number(b.procurement_rate) : null;
+    const amount=b.bill_amount!=null ? Number(b.bill_amount) : null;
+
+    setText("quantity",weight!=null && Number.isFinite(weight)?weight.toFixed(2)+" kg":null,"Not recorded");
+    setText("verifiedQuantity",weight!=null && Number.isFinite(weight)?weight.toFixed(2)+" kg":null);
+    setText("rate",rate!=null && Number.isFinite(rate)?money(rate)+" / Kg":null);
+    setText("totalAmount",amount!=null && Number.isFinite(amount)?money(amount):null,"Not calculated");
+    setText("amountNote",amount!=null?"Amount recorded in the procurement database.":"Amount will appear after bill generation.");
+    setText("billNumber",b.bill_number);
+    setText("paymentMode",b.payment_mode);
+    setText("transactionId",b.transaction_reference);
+    setText("paymentDate",b.payment_recorded_at?dateText(b.payment_recorded_at):null);
+
+    const quality=norm(b.quality_status);
+    const payment=norm(b.payment_status);
+
+    const qualityDone=quality==="accepted";
+    const qualityRejected=quality==="rejected";
+    const weighingDone=weight!==null && Number.isFinite(weight) && weight>0;
+    const billDone=Boolean(b.bill_number) && amount!==null;
+    const paymentDone=payment==="credited";
+    const paymentProcessing=payment==="processing";
+
+    setStep("stepBooking",true);
+    setStep("stepQuality",qualityDone||qualityRejected,!qualityDone&&!qualityRejected);
+    setStep("stepWeighing",weighingDone,qualityDone&&!weighingDone);
+    setStep("stepBill",billDone,weighingDone&&!billDone);
+    setStep("stepPayment",paymentDone||paymentProcessing,billDone&&!paymentDone);
+    setStep("stepCompleted",paymentDone);
+
+    setText("qualityDescription",
+        qualityDone?"Quality Accepted"+(b.crop_grade?" \u2022 Grade "+b.crop_grade:"")+(b.moisture_percent!=null?" \u2022 Moisture "+Number(b.moisture_percent).toFixed(2)+"%":""):
+        qualityRejected?"Quality inspection rejected.":"Awaiting quality inspection."
+    );
+
+    setText("weighingDescription",
+        weighingDone?"Net weight: "+weight.toFixed(2)+" kg":"Awaiting verified quantity."
+    );
+
+    setText("billDescription",
+        billDone?"Bill: "+b.bill_number+" \u2022 "+money(amount):"Bill not generated."
+    );
+
+    setText("paymentDescription",
+        paymentDone?"Payment credited \u2022 Reference: "+(b.transaction_reference||"Recorded"):
+        paymentProcessing?"Payment is processing.":"Payment pending."
+    );
+    setText("paymentCompletedDescription",
+        paymentDone
+            ? "Credit status recorded by officer."
+            : paymentProcessing
+                ? "Awaiting final credit confirmation."
+                : "Awaiting payment credit."
+    );
+
+    const status=document.getElementById("paymentStatus");
+    const notice=document.getElementById("paymentNotice");
+
+    status.style.background="#fff4d6";
+    status.style.color="#946200";
+
+    if(paymentDone){
+        status.textContent="PAYMENT CREDITED";
+        status.style.background="#e5f5eb";
+        status.style.color="#176b3a";
+        notice.textContent="Payment is marked as credited in the procurement database. This is an officer-recorded status, not independent bank verification.";
+    }else if(paymentProcessing){
+        status.textContent="PAYMENT PROCESSING";
+        notice.textContent="Payment is recorded as processing. Final credit confirmation is pending.";
+    }else if(billDone){
+        status.textContent="BILL GENERATED";
+        notice.textContent="Your bill is generated. Payment credit is still pending.";
+    }else if(weighingDone){
+        status.textContent="AWAITING BILL";
+        notice.textContent="Weighing is recorded. Bill generation and payment are pending.";
+    }else if(qualityRejected){
+        status.textContent="QUALITY REJECTED";
+        notice.textContent="Quality inspection is marked rejected. Contact the procurement officer.";
+    }else{
+        status.textContent="AWAITING PROCUREMENT";
+        notice.textContent="Quality verification, weighing, bill generation and payment are not yet completed.";
+    }
+}
+
+async function loadPaymentPage(){
+    const token=getAuthToken();
+    if(!token){
+        setText("errorMessage","Please login first to view payment details.");
+        return;
+    }
+
+    try{
+        setText("errorMessage","Loading payment records...");
+
+        const response=await fetch(API_URL,{
+            headers:{"Authorization":"Bearer "+token}
+        });
+
+        const data=await response.json();
+
+        if(!response.ok || !data.success){
+            throw new Error(data.message||"Unable to load payment records.");
+        }
+
+        farmerBookings=data.bookings||[];
+
+        if(farmerBookings.length===0){
+            setText("errorMessage","No bookings found for this farmer account.");
+            document.getElementById("bookingSelector").disabled=true;
+            return;
+        }
+
+        let preferred=null;
+        try{
+            const saved=JSON.parse(localStorage.getItem("bookingData"));
+            const savedToken=saved?.token||saved?.booking?.token;
+            if(savedToken!=null){
+                preferred=farmerBookings.find(b=>String(b.token)===String(savedToken));
+            }
+        }catch{}
+
+        selectedBooking=preferred||farmerBookings[0];
+
+        renderBookingSelector();
+        renderPayment();
+        setText("errorMessage","Successfully loaded "+farmerBookings.length+" booking(s) from database.");
+
+    }catch(error){
+        console.error("Payment page error:",error);
+        setText("errorMessage","Unable to load payment details: "+error.message);
+    }
+}
+
+document.getElementById("bookingSelector").addEventListener("change",event=>{
+    selectedBooking=farmerBookings.find(
+        b=>String(b.booking_id)===event.target.value
+    );
+    renderPayment();
+});
+
+function goStatus(){window.location.href="procurementstatus.html";}
+function goDashboard(){window.location.href="farmer-dashboard.html";}
+function logout(){
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    localStorage.removeItem("bookingData");
+    window.location.href="index22.html";
+}
+
+loadPaymentPage();
+</script>
+
+</body>
+</html>
+

@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Voice Assistant - AgriProcure</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f5f8f6;
+            color: #222;
+        }
+
+        /* HEADER */
+        .header {
+            background: #176b3a;
+            color: white;
+            padding: 18px 6%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-icon {
+            font-size: 27px;
+        }
+
+        .brand h2 {
+            font-size: 21px;
+        }
+
+        .brand p {
+            font-size: 11px;
+            opacity: 0.85;
+            margin-top: 2px;
+        }
+
+        .logout-btn {
+            border: 1px solid rgba(255,255,255,0.5);
+            background: transparent;
+            color: white;
+            padding: 9px 17px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.12);
+        }
+
+        /* MAIN */
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            margin: 35px auto;
+        }
+
+        /* HERO */
+        .hero {
+            background: linear-gradient(135deg, #176b3a, #249052);
+            color: white;
+            padding: 38px;
+            border-radius: 22px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .hero-icon {
+            width: 75px;
+            height: 75px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 18px;
+            font-size: 36px;
+        }
+
+        .hero h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .hero p {
+            font-size: 14px;
+            line-height: 1.6;
+            opacity: 0.9;
+            max-width: 620px;
+            margin: auto;
+        }
+
+        /* ASSISTANT CARD */
+        .assistant-card {
+            background: white;
+            border: 1px solid #e1e8e3;
+            border-radius: 20px;
+            padding: 35px;
+            text-align: center;
+            box-shadow: 0 5px 18px rgba(0,0,0,0.04);
+        }
+
+        .mic-wrapper {
+            margin: 15px auto 22px;
+        }
+
+        .mic-button {
+            width: 105px;
+            height: 105px;
+            border-radius: 50%;
+            border: none;
+            background: #176b3a;
+            color: white;
+            font-size: 42px;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(23,107,58,0.25);
+            transition: 0.25s ease;
+        }
+
+        .mic-button:hover {
+            transform: scale(1.05);
+        }
+
+        .mic-button.listening {
+            background: #c62828;
+            animation: pulse 1.2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(198,40,40,0.4);
+            }
+
+            70% {
+                box-shadow: 0 0 0 22px rgba(198,40,40,0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(198,40,40,0);
+            }
+        }
+
+        .status-text {
+            color: #176b3a;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .instruction {
+            color: #777;
+            font-size: 13px;
+            margin-bottom: 25px;
+        }
+
+        /* LANGUAGE */
+        .language-title {
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        .language-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .language-buttons button {
+            border: 1px solid #cfdad3;
+            background: white;
+            padding: 9px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .language-buttons button.active {
+            background: #176b3a;
+            color: white;
+            border-color: #176b3a;
+        }
+
+        /* RESULT */
+        .result-box {
+            background: #f4f8f5;
+            border: 1px solid #dce8df;
+            border-radius: 13px;
+            padding: 18px;
+            text-align: left;
+            margin-bottom: 25px;
+        }
+
+        .result-box span {
+            font-size: 11px;
+            color: #777;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 7px;
+        }
+
+        .result-box p {
+            font-size: 14px;
+            color: #333;
+            min-height: 20px;
+        }
+
+        /* COMMANDS */
+        .commands-section {
+            margin-top: 28px;
+        }
+
+        .commands-section h2 {
+            font-size: 19px;
+            margin-bottom: 15px;
+        }
+
+        .command-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+        }
+
+        .command-card {
+            border: 1px solid #e1e8e3;
+            background: white;
+            border-radius: 13px;
+            padding: 18px;
+            text-align: left;
+        }
+
+        .command-card .icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .command-card strong {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .command-card p {
+            color: #777;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        /* BOTTOM */
+        .bottom-actions {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        .bottom-actions button {
+            border: none;
+            background: #176b3a;
+            color: white;
+            padding: 11px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .bottom-actions .secondary {
+            background: #edf3ef;
+            color: #176b3a;
+            border: 1px solid #d5e1d8;
+        }
+
+        /* MOBILE */
+        @media (max-width: 700px) {
+
+            .header {
+                padding: 15px 5%;
+            }
+
+            .brand h2 {
+                font-size: 18px;
+            }
+
+            .container {
+                width: 92%;
+                margin: 22px auto;
+            }
+
+            .hero {
+                padding: 28px 20px;
+            }
+
+            .hero h1 {
+                font-size: 26px;
+            }
+
+            .assistant-card {
+                padding: 25px 18px;
+            }
+
+            .command-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .bottom-actions {
+                flex-direction: column;
+            }
+
+            .bottom-actions button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header class="header">
+
+        <div class="brand">
+            <div class="brand-icon">🌾</div>
+
+            <div>
+                <h2>AgriProcure</h2>
+                <p>Smart Procurement & Queue Management</p>
+            </div>
+        </div>
+
+        <button class="logout-btn" onclick="logout()">
+            Logout
+        </button>
+
+    </header>
+
+
+    <main class="container">
+
+        <!-- HERO -->
+        <section class="hero">
+
+            <div class="hero-icon">
+                🎙️
+            </div>
+
+            <h1>Voice Assistant</h1>
+
+            <p>
+                Speak naturally to access AgriProcure services.
+                You can ask about your token, book a slot,
+                check payment status and more.
+            </p>
+
+        </section>
+
+
+        <!-- ASSISTANT -->
+        <section class="assistant-card">
+
+            <div class="mic-wrapper">
+
+                <button
+                    id="micButton"
+                    class="mic-button"
+                    onclick="startListening()"
+                    aria-label="Start voice assistant">
+                    🎙️
+                </button>
+
+            </div>
+
+            <div id="statusText" class="status-text">
+                Tap the microphone to speak
+            </div>
+
+            <p class="instruction">
+                Try saying: "Show my token" or "Book a slot"
+            </p>
+
+
+            <!-- LANGUAGE -->
+            <div class="language-title">
+                Select Language
+            </div>
+
+            <div class="language-buttons">
+
+                <button
+                    id="englishBtn"
+                    class="active"
+                    onclick="setLanguage('en-IN')">
+                    English
+                </button>
+
+                <button
+                    id="hindiBtn"
+                    onclick="setLanguage('hi-IN')">
+                    हिंदी
+                </button>
+
+            </div>
+
+
+            <!-- RESULT -->
+            <div class="result-box">
+
+                <span>YOU SAID</span>
+
+                <p id="userText">
+                    Your voice command will appear here.
+                </p>
+
+            </div>
+
+
+            <!-- COMMAND EXAMPLES -->
+            <div class="commands-section">
+
+                <h2>What can I ask?</h2>
+
+                <div class="command-grid">
+
+                    <div class="command-card">
+                        <div class="icon">📅</div>
+                        <strong>Book a Slot</strong>
+                        <p>
+                            "I want to book a procurement slot."
+                        </p>
+                    </div>
+
+                    <div class="command-card">
+                        <div class="icon">🎫</div>
+                        <strong>Check Token</strong>
+                        <p>
+                            "Show my token number."
+                        </p>
+                    </div>
+
+                    <div class="command-card">
+                        <div class="icon">📊</div>
+                        <strong>Live Queue</strong>
+                        <p>
+                            "How many farmers are ahead?"
+                        </p>
+                    </div>
+
+                    <div class="command-card">
+                        <div class="icon">💰</div>
+                        <strong>Payment</strong>
+                        <p>
+                            "What is my payment status?"
+                        </p>
+                    </div>
+
+                    <div class="command-card">
+                        <div class="icon">📍</div>
+                        <strong>Nearby Centres</strong>
+                        <p>
+                            "Show nearby procurement centres."
+                        </p>
+                    </div>
+
+                    <div class="command-card">
+                        <div class="icon">🌾</div>
+                        <strong>Procurement Status</strong>
+                        <p>
+                            "What is my crop status?"
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ACTIONS -->
+        <div class="bottom-actions">
+
+            <button
+                class="secondary"
+                onclick="goDashboard()">
+                ← Dashboard
+            </button>
+
+            <button onclick="startListening()">
+                🎙️ Speak Again
+            </button>
+
+        </div>
+
+    </main>
+
+
+    <script>
+
+        let selectedLanguage = "en-IN";
+
+        let recognition = null;
+
+
+        /* LANGUAGE */
+
+        function setLanguage(language) {
+
+            selectedLanguage = language;
+
+            document
+                .getElementById("englishBtn")
+                .classList.remove("active");
+
+            document
+                .getElementById("hindiBtn")
+                .classList.remove("active");
+
+
+            if (language === "en-IN") {
+
+                document
+                    .getElementById("englishBtn")
+                    .classList.add("active");
+
+            } else {
+
+                document
+                    .getElementById("hindiBtn")
+                    .classList.add("active");
+
+            }
+        }
+
+
+        /* START LISTENING */
+
+        function startListening() {
+
+            const SpeechRecognition =
+                window.SpeechRecognition ||
+                window.webkitSpeechRecognition;
+
+
+            if (!SpeechRecognition) {
+
+                document.getElementById("statusText").innerText =
+                    "Voice recognition is not supported in this browser.";
+
+                return;
+            }
+
+
+            recognition = new SpeechRecognition();
+
+            recognition.lang = selectedLanguage;
+
+            recognition.continuous = false;
+
+            recognition.interimResults = false;
+
+
+            const micButton =
+                document.getElementById("micButton");
+
+            const status =
+                document.getElementById("statusText");
+
+
+            recognition.onstart = function () {
+
+                micButton.classList.add("listening");
+
+                micButton.innerText = "⏹️";
+
+                status.innerText =
+                    selectedLanguage === "hi-IN"
+                    ? "सुन रहा हूँ... बोलिए"
+                    : "Listening... speak now";
+
+            };
+
+
+            recognition.onresult = function(event) {
+
+                const transcript =
+                    event.results[0][0].transcript;
+
+                document.getElementById("userText").innerText =
+                    transcript;
+
+                processCommand(transcript);
+
+            };
+
+
+            recognition.onerror = function() {
+
+                micButton.classList.remove("listening");
+
+                micButton.innerText = "🎙️";
+
+                status.innerText =
+                    "Could not understand. Please try again.";
+
+            };
+
+
+            recognition.onend = function() {
+
+                micButton.classList.remove("listening");
+
+                micButton.innerText = "🎙️";
+
+            };
+
+
+            recognition.start();
+
+        }
+
+
+        /* COMMAND PROCESSING */
+
+        function processCommand(command) {
+
+            const text = command.toLowerCase();
+
+            let response = "";
+
+
+            /* BOOK SLOT */
+
+            if (
+                text.includes("book") ||
+                text.includes("slot") ||
+                text.includes("बुक") ||
+                text.includes("स्लॉट")
+            ) {
+
+                response =
+                    selectedLanguage === "hi-IN"
+                    ? "मैं आपको स्लॉट बुकिंग पेज पर ले जा रहा हूँ।"
+                    : "Taking you to the slot booking page.";
+
+                speak(response);
+
+                setTimeout(function() {
+
+                    window.location.href =
+                        "book-slot.html";
+
+                }, 1300);
+
+                return;
+            }
+
+
+            /* TOKEN */
+
+            if (
+                text.includes("token") ||
+                text.includes("टोकन")
+            ) {
+
+                response =
+                    selectedLanguage === "hi-IN"
+                    ? "आपका टोकन नंबर 42 है।"
+                    : "Your token number is 42.";
+
+                speak(response);
+
+                return;
+            }
+
+
+            /* QUEUE */
+
+            if (
+                text.includes("queue") ||
+                text.includes("ahead") ||
+                text.includes("क्यू") ||
+                text.includes("लाइन")
+            ) {
+
+                response =
+                    selectedLanguage === "hi-IN"
+                    ? "आपसे आगे 18 किसान हैं और अनुमानित प्रतीक्षा समय 70 मिनट है।"
+                    : "There are 18 farmers ahead of you. Estimated waiting time is 70 minutes.";
+
+                speak(response);
+
+                return;
+            }
+
+
+            /* PAYMENT */
+
+            if (
+                text.includes("payment") ||
+                text.includes("पैमेंट") ||
+                text.includes("भुगतान")
+            ) {
+
+                response =
+                    selectedLanguage === "hi-IN"
+                    ? "आपका भुगतान अभी प्रोसेसिंग में है।"
+                    : "Your payment is currently processing.";
+
+                speak(response);
+
+                setTimeout(function() {
+
+                    window.location.href =
+                        "paymentstatus.html";
+
+                }, 1500);
+
+                return;
+            }
+
+
+            /* NEARBY CENTRES */
+
+            if (
+                text.includes("nearby") ||
+                text.includes("centre") ||
+                text.includes("center") ||
+                text.includes("पास") ||
+                text.includes("केंद्र")
+            ) {
+
+                response =
+                    selectedLanguage === "hi-IN"
+                    ? "मैं आपको नजदीकी खरीद केंद्र दिखा रहा हूँ।"
+                    : "Showing nearby procurement centres.";
+
+                speak(response);
+
+                setTimeout(function() {
+
+                    window.location.href =
+                        "nearby-centres.html";
+
+                }, 1300);
+
+                return;
+            }
+
+
+            /* PROCUREMENT */
+
+            if (
+                text.includes("procurement") ||
+                text.includes("crop status") ||
+                text.includes("फसल") ||
+                text.includes("खरीद")
+            ) {
+
+                response =
+                    selectedLanguage === "hi-IN"
+                    ? "मैं आपकी फसल की खरीद स्थिति खोल रहा हूँ।"
+                    : "Opening your procurement status.";
+
+                speak(response);
+
+                setTimeout(function() {
+
+                    window.location.href =
+                        "procurementstatus.html";
+
+                }, 1300);
+
+                return;
+            }
+
+
+            /* DEFAULT */
+
+            response =
+                selectedLanguage === "hi-IN"
+                ? "माफ कीजिए, मैं इसे समझ नहीं पाया। कृपया दोबारा बोलें।"
+                : "Sorry, I could not understand that. Please try again.";
+
+            speak(response);
+
+        }
+
+
+        /* TEXT TO SPEECH */
+
+        function speak(text) {
+
+            const status =
+                document.getElementById("statusText");
+
+            status.innerText = text;
+
+
+            if ("speechSynthesis" in window) {
+
+                window.speechSynthesis.cancel();
+
+                const speech =
+                    new SpeechSynthesisUtterance(text);
+
+                speech.lang = selectedLanguage;
+
+                speech.rate = 0.95;
+
+                speech.pitch = 1;
+
+                window.speechSynthesis.speak(speech);
+
+            }
+
+        }
+
+
+        /* NAVIGATION */
+
+        function goDashboard() {
+
+            window.location.href =
+                "farmer-dashboard.html";
+
+        }
+
+
+        function logout() {
+
+            window.location.href =
+                "index22.html";
+
+        }
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,667 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgriProcure | Officer Dashboard</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
+body{background:#f4f7f9;color:#1f2937}
+header{background:#176b3a;color:white;padding:17px 5%;display:flex;justify-content:space-between;align-items:center;gap:15px}
+.brand h1{font-size:24px}.brand p{font-size:13px;margin-top:4px;opacity:.9}
+.header-right{display:flex;align-items:center;gap:18px}
+.logout{border:0;background:white;color:#176b3a;padding:9px 17px;border-radius:6px;cursor:pointer;font-weight:bold}
+.container{max-width:1250px;margin:30px auto;padding:0 20px}
+.page-title{margin-bottom:22px}.page-title h2{color:#123b27;font-size:28px}.page-title p{color:#6b7280;margin-top:6px}
+.centre-bar,.card,.stat-card{background:white;border:1px solid #e1e7eb;border-radius:10px}
+.centre-bar{padding:18px 22px;display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;gap:15px}
+.centre-info strong{display:block;font-size:18px;color:#176b3a}.centre-info span,.muted{color:#6b7280;font-size:13px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.stat-card{padding:20px}.stat-card span{color:#6b7280;font-size:13px}.stat-card h2{margin-top:8px;font-size:29px;color:#176b3a}
+.content-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:20px;align-items:start}
+.card{padding:22px;margin-bottom:20px;min-width:0}
+.card h3{color:#123b27;margin-bottom:17px}
+.queue-list{display:flex;flex-direction:column}
+.queue-row{display:grid;grid-template-columns:65px 1fr 125px 65px;gap:9px;align-items:center;padding:13px 5px;border-bottom:1px solid #edf0f2}
+.token{font-weight:bold;color:#176b3a}.farmer-name{font-weight:bold;font-size:14px}
+.crop{font-size:12px;color:#6b7280;margin-top:4px}
+.status{font-size:11px;font-weight:bold;padding:6px 8px;border-radius:15px;text-align:center;background:#eef2f5;color:#5b6470}
+.status.completed{background:#e5f5eb;color:#176b3a}
+.status.processing{background:#fff3d6;color:#946200}
+.status.rejected{background:#fde8e8;color:#b42318}
+.select-btn,.primary-btn,.secondary-btn{border:0;border-radius:6px;padding:9px 11px;cursor:pointer;font-weight:bold}
+.select-btn,.primary-btn{background:#176b3a;color:white}
+.secondary-btn{background:#e8eef0;color:#374151}
+.select-btn{font-size:12px}
+.farmer-box{background:#f5faf7;border:1px solid #dcebe1;border-radius:8px;padding:16px;margin-bottom:17px}
+.farmer-box h4{color:#176b3a;font-size:18px}
+.farmer-box p{color:#6b7280;font-size:13px;margin-top:5px}
+.selected-token{margin-top:10px;font-weight:bold}
+.details{font-size:13px;line-height:1.9;color:#4b5563;margin-top:8px;overflow-wrap:anywhere}
+.step{display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid #edf0f2;font-size:13px}
+.step:last-child{border-bottom:0}
+.step-status{font-weight:bold;font-size:12px;text-align:right}
+.done{color:#176b3a}.pending{color:#9ca3af}.warning{color:#946200}.bad{color:#b42318}
+.workflow-note{font-size:12px;color:#6b7280;margin-top:12px;line-height:1.5}
+.form-section{border-top:1px solid #e5e7eb;margin-top:18px;padding-top:18px}
+.form-section h4{color:#176b3a;margin-bottom:12px;font-size:15px}
+.field{margin-bottom:12px}
+.field label{display:block;font-size:12px;font-weight:bold;color:#4b5563;margin-bottom:6px}
+.field input,.field select,.field textarea{width:100%;padding:10px;border:1px solid #d1d5db;border-radius:6px;font-size:13px;background:white}
+.field textarea{min-height:65px;resize:vertical}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.primary-btn{width:100%;padding:11px}
+.message{font-size:13px;font-weight:bold;margin-top:14px;line-height:1.5;overflow-wrap:anywhere}
+.empty{padding:22px;text-align:center;color:#6b7280;font-size:13px}
+.top-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.refresh-btn{background:#e8eef0;border:0;padding:9px 13px;border-radius:6px;cursor:pointer;font-weight:bold}
+#loading{color:#6b7280;font-size:13px;margin:12px 0}
+@media(max-width:850px){.stats{grid-template-columns:repeat(2,1fr)}.content-grid{grid-template-columns:1fr}}
+@media(max-width:600px){
+header{padding:14px 18px}.header-right{gap:8px}.officer-name{display:none}
+.container{padding:0 13px;margin:20px auto}.stats{gap:10px}.stat-card{padding:15px}
+.queue-row{grid-template-columns:48px 1fr 90px}.queue-row .select-btn{grid-column:2/4;justify-self:start}
+.centre-bar{align-items:flex-start;flex-direction:column}
+.form-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+
+<body>
+<header>
+    <div class="brand">
+        <h1>🌾 AgriProcure</h1>
+        <p>Smart Procurement & Queue Management</p>
+    </div>
+    <div class="header-right">
+        <div class="officer-name" id="officerName">Procurement Officer</div>
+        <button class="logout" onclick="logout()">Logout</button>
+    </div>
+</header>
+
+<div class="container">
+    <div class="page-title">
+        <h2>Procurement Officer Dashboard</h2>
+        <p>Manage farmer bookings, crop verification, weighing, bills and payment records.</p>
+    </div>
+
+    <div class="centre-bar">
+        <div class="centre-info">
+            <strong id="centreName">All Procurement Centres</strong>
+            <span id="todayDate"></span>
+        </div>
+        <div class="top-actions">
+            <span class="muted">Database-connected dashboard</span>
+            <button class="refresh-btn" onclick="loadBookings()">↻ Refresh</button>
+        </div>
+    </div>
+
+    <div class="stats">
+        <div class="stat-card"><span>Total Bookings</span><h2 id="totalCount">0</h2></div>
+        <div class="stat-card"><span>Waiting</span><h2 id="waitingCount">0</h2></div>
+        <div class="stat-card"><span>Processing</span><h2 id="processingCount">0</h2></div>
+        <div class="stat-card"><span>Completed</span><h2 id="completedCount">0</h2></div>
+    </div>
+
+    <div id="loading">Loading bookings from database...</div>
+
+    <div class="content-grid">
+        <div class="card">
+            <h3>Procurement Booking Queue</h3>
+            <div id="queueList" class="queue-list">
+                <div class="empty">Loading bookings...</div>
+            </div>
+        </div>
+
+        <div>
+            <div class="card">
+                <h3>Farmer Processing</h3>
+
+                <div class="farmer-box">
+                    <h4 id="farmerName">Select a booking</h4>
+                    <p id="farmerCrop">Farmer and crop details will appear here.</p>
+                    <div class="selected-token">Token: <span id="farmerToken">—</span></div>
+                    <div class="details" id="bookingDetails"></div>
+                </div>
+
+                <div>
+                    <div class="step"><span>Quality Check</span><span class="step-status pending" id="qualityStatus">Pending</span></div>
+                    <div class="step"><span>Weighing</span><span class="step-status pending" id="weighingStatus">Pending</span></div>
+                    <div class="step"><span>Bill Generated</span><span class="step-status pending" id="billStatus">Pending</span></div>
+                    <div class="step"><span>Payment</span><span class="step-status pending" id="paymentStatus">Pending</span></div>
+                </div>
+
+                <div class="workflow-note">
+                    The stages update only after the officer saves the corresponding records.
+                </div>
+                <div id="message" class="message"></div>
+            </div>
+
+            <div class="card">
+                <h3>Update Procurement Stages</h3>
+
+                <div class="form-section">
+                    <h4>1. Crop Quality Check</h4>
+                    <div class="field">
+                        <label for="qualitySelect">Quality decision</label>
+                        <select id="qualitySelect">
+                            <option value="">Select decision</option>
+                            <option value="Accepted">Accepted</option>
+                            <option value="Rejected">Rejected</option>
+                        </select>
+                    </div>
+                    <div class="form-grid">
+                        <div class="field">
+                            <label for="moisture">Moisture (%)</label>
+                            <input type="number" id="moisture" min="0" max="100" step="0.01">
+                        </div>
+                        <div class="field">
+                            <label for="grade">Crop grade</label>
+                            <input type="text" id="grade">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="qualityRemarks">Quality remarks</label>
+                        <textarea id="qualityRemarks"></textarea>
+                    </div>
+                    <button class="primary-btn" onclick="saveQuality()">Save Quality Check</button>
+                </div>
+
+                <div class="form-section">
+                    <h4>2. Crop Weighing</h4>
+                    <div class="form-grid">
+                        <div class="field">
+                            <label for="grossWeight">Gross weight (kg)</label>
+                            <input type="number" id="grossWeight" min="0.01" step="0.01">
+                        </div>
+                        <div class="field">
+                            <label for="tareWeight">Tare weight (kg)</label>
+                            <input type="number" id="tareWeight" min="0" step="0.01">
+                        </div>
+                    </div>
+                    <button class="primary-btn" onclick="saveWeighing()">Save Weighing</button>
+                    <p class="workflow-note">Net weight = Gross weight − Tare weight.</p>
+                </div>
+
+                <div class="form-section">
+                    <h4>3. Generate Procurement Bill</h4>
+                    <div class="field">
+                        <label for="rate">Procurement rate (₹ per kg)</label>
+                        <input type="number" id="rate" min="0.01" step="0.01" placeholder="Example: 25" oninput="updateBillEstimate()">
+                        <p class="workflow-note">Enter the approved rate PER KG, not the total bill amount. Example: ₹25 per kg.</p>
+                        <p id="billEstimate" class="workflow-note">Enter rate to calculate estimated bill.</p>
+                    </div>
+                    <button class="primary-btn" onclick="generateBill()">Generate Bill</button>
+                    <p class="workflow-note">Bill amount = Net weight × approved rate entered by the officer.</p>
+                </div>
+
+                <div class="form-section">
+                    <h4>4. Payment Update</h4>
+                    <div class="field">
+                        <label for="paymentSelect">Payment status</label>
+                        <select id="paymentSelect">
+                            <option value="Processing">Processing</option>
+                            <option value="Credited">Credited</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="transactionReference">Transaction reference</label>
+                        <input type="text" id="transactionReference">
+                    </div>
+                    <div class="field">
+                        <label for="paymentRemarks">Payment remarks</label>
+                        <textarea id="paymentRemarks"></textarea>
+                    </div>
+                    <button class="primary-btn" onclick="savePayment()">Save Payment Status</button>
+                    <p class="workflow-note">Payment status is manually recorded. This does not verify a bank transaction.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let bookings = [];
+let selectedBooking = null;
+
+const userData = JSON.parse(localStorage.getItem("user") || "null");
+const authToken = userData?.token;
+const role = userData?.user?.role;
+
+if (!authToken || !["officer", "admin"].includes(role)) {
+    alert("Please login with an authorized officer account.");
+    window.location.href = "index22.html";
+}
+
+document.getElementById("officerName").textContent =
+    userData?.user?.name || "Procurement Officer";
+
+document.getElementById("todayDate").textContent =
+    new Date().toLocaleDateString("en-IN", {
+        day: "numeric", month: "long", year: "numeric"
+    });
+
+async function apiRequest(url, options = {}) {
+    let response;
+
+    try {
+        response = await fetch(url, {
+            ...options,
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${authToken}`,
+                ...(options.headers || {})
+            }
+        });
+    } catch (error) {
+        throw new Error("Cannot connect to server. Check that node server.js is running.");
+    }
+
+    const rawText = await response.text();
+    let data = {};
+
+    try {
+        data = rawText ? JSON.parse(rawText) : {};
+    } catch {
+        throw new Error(
+            `Server returned an invalid response (HTTP ${response.status}). Check that the updated server.js is running.`
+        );
+    }
+
+    if (!response.ok) {
+        const detail = data.detail ? ` Details: ${data.detail}` : "";
+        throw new Error(
+            (data.message || `Request failed with HTTP ${response.status}.`) + detail
+        );
+    }
+
+    return data;
+}
+
+function escapeHtml(value) {
+    return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;",
+        '"': "&quot;", "'": "&#039;"
+    })[char]);
+}
+
+function statusClass(status) {
+    if (["Completed", "Accepted", "Credited"].includes(status)) return "completed";
+    if (status === "Rejected") return "rejected";
+    if (status === "Waiting") return "";
+    return "processing";
+}
+
+function setStep(id, value, type) {
+    const element = document.getElementById(id);
+    element.textContent = value;
+    element.className = "step-status " + type;
+}
+
+function renderWorkflow(b) {
+    const quality = b.quality_status || "Pending";
+
+    const weighing = b.net_weight !== null && b.net_weight !== undefined
+        ? `${Number(b.net_weight).toFixed(2)} kg`
+        : "Pending";
+
+    const bill = b.bill_number
+        ? `${b.bill_number} • ₹${Number(b.bill_amount).toFixed(2)}`
+        : "Pending";
+
+    const payment = b.payment_status || "Pending";
+
+    setStep(
+        "qualityStatus",
+        quality === "Accepted" ? "✓ Accepted" :
+        quality === "Rejected" ? "✕ Rejected" : "Pending",
+        quality === "Accepted" ? "done" :
+        quality === "Rejected" ? "bad" : "pending"
+    );
+
+    setStep(
+        "weighingStatus",
+        weighing,
+        weighing === "Pending" ? "pending" : "done"
+    );
+
+    setStep(
+        "billStatus",
+        bill,
+        b.bill_number ? "done" : "pending"
+    );
+
+    setStep(
+        "paymentStatus",
+        payment,
+        payment === "Credited" ? "done" :
+        payment === "Processing" ? "warning" : "pending"
+    );
+}
+
+function renderQueue() {
+    const list = document.getElementById("queueList");
+
+    if (!bookings.length) {
+        list.innerHTML = '<div class="empty">No farmer bookings found in the database.</div>';
+        return;
+    }
+
+    list.innerHTML = bookings.map(b => `
+        <div class="queue-row">
+            <span class="token">#${escapeHtml(b.token)}</span>
+            <div>
+                <div class="farmer-name">${escapeHtml(b.farmer)}</div>
+                <div class="crop">${escapeHtml(b.crop)} • ${escapeHtml(b.centre)}</div>
+            </div>
+            <span class="status ${statusClass(b.workflow_status)}">${escapeHtml(b.workflow_status || "Waiting")}</span>
+            <button class="select-btn" onclick="selectBooking(${Number(b.id)})">View</button>
+        </div>
+    `).join("");
+}
+
+function updateStats() {
+    document.getElementById("totalCount").textContent = bookings.length;
+
+    document.getElementById("waitingCount").textContent =
+        bookings.filter(b => ["Waiting", "Rejected"].includes(b.workflow_status)).length;
+
+    document.getElementById("processingCount").textContent =
+        bookings.filter(b => !["Waiting", "Rejected", "Completed"].includes(b.workflow_status)).length;
+
+    document.getElementById("completedCount").textContent =
+        bookings.filter(b => b.workflow_status === "Completed").length;
+}
+
+function showMessage(message, isError = false) {
+    const element = document.getElementById("message");
+    element.textContent = message;
+    element.style.color = isError ? "#b42318" : "#176b3a";
+}
+
+function selectBooking(id, showNotice = true) {
+    selectedBooking = bookings.find(b => Number(b.id) === Number(id));
+    if (!selectedBooking) return;
+
+    const b = selectedBooking;
+
+    document.getElementById("farmerName").textContent = b.farmer || "Unknown Farmer";
+    document.getElementById("farmerCrop").textContent = b.crop || "Crop not available";
+    document.getElementById("farmerToken").textContent = "#" + b.token;
+
+    document.getElementById("bookingDetails").innerHTML =
+        `Booking ID: ${escapeHtml(b.id)}<br>` +
+        `Centre: ${escapeHtml(b.centre)}<br>` +
+        `Date: ${escapeHtml(b.date)}<br>` +
+        `Slot: ${escapeHtml(b.slot)}`;
+
+    renderWorkflow(b);
+
+    document.getElementById("qualitySelect").value = b.quality_status || "";
+    document.getElementById("moisture").value = b.moisture_percent ?? "";
+    document.getElementById("grade").value = b.crop_grade || "";
+    document.getElementById("qualityRemarks").value = b.quality_remarks || "";
+
+    document.getElementById("grossWeight").value = b.gross_weight ?? "";
+    document.getElementById("tareWeight").value = b.tare_weight ?? "";
+    document.getElementById("rate").value = b.procurement_rate ?? "";
+
+    document.getElementById("paymentSelect").value =
+        b.payment_status === "Credited" ? "Credited" : "Processing";
+
+    document.getElementById("transactionReference").value =
+        b.transaction_reference || "";
+
+    document.getElementById("paymentRemarks").value =
+        b.payment_remarks || "";
+
+    if (showNotice) showMessage(`Selected booking #${b.token}.`);
+}
+
+async function loadBookings() {
+    const loading = document.getElementById("loading");
+    const previousId = selectedBooking?.id;
+
+    loading.textContent = "Loading bookings from database...";
+
+    try {
+        const data = await apiRequest("/api/officer/bookings");
+
+        if (!Array.isArray(data.bookings)) {
+            throw new Error("Invalid bookings response from server.");
+        }
+
+        bookings = data.bookings;
+
+        updateStats();
+        renderQueue();
+
+        const centres = [...new Set(bookings.map(b => b.centre).filter(Boolean))];
+
+        document.getElementById("centreName").textContent =
+            centres.length === 1 ? centres[0] :
+            centres.length > 1 ? "All Procurement Centres" :
+            "No Procurement Centre";
+
+        if (previousId && bookings.some(b => Number(b.id) === Number(previousId))) {
+            selectBooking(previousId, false);
+        } else if (bookings.length) {
+            selectBooking(bookings[0].id, false);
+        } else {
+            selectedBooking = null;
+            document.getElementById("farmerName").textContent = "No booking selected";
+            document.getElementById("farmerCrop").textContent = "No booking data available.";
+            document.getElementById("farmerToken").textContent = "—";
+            document.getElementById("bookingDetails").textContent = "";
+        }
+
+        loading.textContent = `Loaded ${bookings.length} booking(s) from PostgreSQL.`;
+        showMessage("Bookings loaded successfully.");
+
+    } catch (error) {
+        loading.textContent = error.message;
+        showMessage(error.message, true);
+        console.error("Dashboard loading error:", error);
+    }
+}
+
+function requireSelectedBooking() {
+    if (!selectedBooking) {
+        showMessage("Please select a farmer booking first.", true);
+        return false;
+    }
+    return true;
+}
+
+async function saveQuality() {
+    if (!requireSelectedBooking()) return;
+
+    const status = document.getElementById("qualitySelect").value;
+
+    if (!status) {
+        showMessage("Select Accepted or Rejected.", true);
+        return;
+    }
+
+    const moisture = document.getElementById("moisture").value;
+
+    try {
+        const result = await apiRequest(
+            `/api/procurement/${selectedBooking.id}/quality`,
+            {
+                method: "PUT",
+                body: JSON.stringify({
+                    quality_status: status,
+                    moisture_percent: moisture,
+                    crop_grade: document.getElementById("grade").value,
+                    quality_remarks: document.getElementById("qualityRemarks").value
+                })
+            }
+        );
+
+        showMessage(result.message);
+        await loadBookings();
+
+    } catch (error) {
+        showMessage(error.message, true);
+    }
+}
+
+async function saveWeighing() {
+    if (!requireSelectedBooking()) return;
+
+    const gross = document.getElementById("grossWeight").value;
+    const tare = document.getElementById("tareWeight").value;
+
+    if (gross === "" || tare === "") {
+        showMessage("Enter both gross and tare weights.", true);
+        return;
+    }
+
+    try {
+        const result = await apiRequest(
+            `/api/procurement/${selectedBooking.id}/weighing`,
+            {
+                method: "PUT",
+                body: JSON.stringify({
+                    gross_weight: Number(gross),
+                    tare_weight: Number(tare)
+                })
+            }
+        );
+
+        showMessage(
+            `${result.message} Net weight: ${Number(result.record.net_weight).toFixed(2)} kg`
+        );
+
+        await loadBookings();
+
+    } catch (error) {
+        showMessage(error.message, true);
+    }
+}
+
+function updateBillEstimate() {
+    const rate = Number(document.getElementById("rate").value);
+    const estimate = document.getElementById("billEstimate");
+
+    if (!selectedBooking || !Number.isFinite(rate) || rate <= 0) {
+        estimate.textContent = "Enter rate to calculate estimated bill.";
+        return;
+    }
+
+    const netWeight = Number(selectedBooking.net_weight);
+
+    if (!Number.isFinite(netWeight) || netWeight <= 0) {
+        estimate.textContent = "Complete weighing before estimating the bill.";
+        return;
+    }
+
+    const amount = netWeight * rate;
+
+    estimate.textContent =
+        `Estimated bill: ₹${amount.toFixed(2)} (${netWeight.toFixed(2)} kg × ₹${rate.toFixed(2)}/kg)`;
+}
+
+async function generateBill() {
+    if (!requireSelectedBooking()) return;
+
+    if (selectedBooking.bill_number) {
+        showMessage("A bill has already been generated for this booking.", true);
+        return;
+    }
+
+    const rate = Number(document.getElementById("rate").value);
+    const netWeight = Number(selectedBooking.net_weight);
+
+    if (!Number.isFinite(rate) || rate <= 0) {
+        showMessage("Enter a valid positive procurement rate per kg.", true);
+        return;
+    }
+
+    if (!Number.isFinite(netWeight) || netWeight <= 0) {
+        showMessage("Valid weighing is required before billing.", true);
+        return;
+    }
+
+    const amount = netWeight * rate;
+
+    const confirmation =
+        `Confirm Procurement Bill\n\n` +
+        `Token: #${selectedBooking.token}\n` +
+        `Net Weight: ${netWeight.toFixed(2)} kg\n` +
+        `Rate: ₹${rate.toFixed(2)} per kg\n` +
+        `Total Bill: ₹${amount.toFixed(2)}\n\n` +
+        `Please verify the rate and total before generating.`;
+
+    if (!confirm(confirmation)) return;
+
+    try {
+        const result = await apiRequest(
+            `/api/procurement/${selectedBooking.id}/bill`,
+            {
+                method: "POST",
+                body: JSON.stringify({
+                    procurement_rate: rate
+                })
+            }
+        );
+
+        showMessage(
+            `${result.message} Bill: ${result.record.bill_number}. Amount: ₹${Number(result.record.bill_amount).toFixed(2)}`
+        );
+
+        await loadBookings();
+
+    } catch (error) {
+        showMessage(error.message, true);
+    }
+}
+async function savePayment() {
+    if (!requireSelectedBooking()) return;
+
+    const status = document.getElementById("paymentSelect").value;
+    const reference = document.getElementById("transactionReference").value.trim();
+
+    if (status === "Credited" && !reference) {
+        showMessage("Enter the transaction reference first.", true);
+        return;
+    }
+
+    if (status === "Credited" &&
+        !confirm("Confirm that payment was verified outside this demo system?")) {
+        return;
+    }
+
+    try {
+        const result = await apiRequest(
+            `/api/procurement/${selectedBooking.id}/payment`,
+            {
+                method: "PUT",
+                body: JSON.stringify({
+                    payment_status: status,
+                    transaction_reference: reference,
+                    payment_remarks: document.getElementById("paymentRemarks").value
+                })
+            }
+        );
+
+        showMessage(result.message);
+        await loadBookings();
+
+    } catch (error) {
+        showMessage(error.message, true);
+    }
+}
+
+function logout() {
+    localStorage.removeItem("user");
+    window.location.href = "index22.html";
+}
+
+loadBookings();
+</script>
+</body>
+</html>

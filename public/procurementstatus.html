@@ -1,0 +1,450 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Procurement Status | AgriProcure</title>
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #eef4f1;
+            color: #26332b;
+        }
+
+        header {
+            background: white;
+            padding: 18px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        header h1 {
+            color: #176b3a;
+            margin: 0;
+            font-size: 30px;
+        }
+
+        header p {
+            margin: 5px 0 0;
+            color: #777;
+            font-size: 13px;
+        }
+
+        button {
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 8px;
+            padding: 12px 18px;
+            font-size: 14px;
+        }
+
+        .logout {
+            background: #176b3a;
+            color: white;
+            border: 0;
+        }
+
+        main {
+            max-width: 1050px;
+            width: 90%;
+            margin: 35px auto;
+        }
+
+        .heading { margin-bottom: 22px; }
+
+        .heading h2 {
+            margin: 0 0 8px;
+            font-size: 28px;
+        }
+
+        .muted { color: #718078; }
+
+        .card {
+            background: white;
+            padding: 24px;
+            border: 1px solid #e0e7e2;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .booking-list {
+            display: grid;
+            gap: 15px;
+        }
+
+        .booking {
+            border: 1px solid #dce6df;
+            border-radius: 12px;
+            padding: 18px;
+        }
+
+        .booking.selected {
+            border: 2px solid #176b3a;
+        }
+
+        .booking-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        .detail {
+            background: #f5f8f6;
+            padding: 14px;
+            border-radius: 9px;
+            min-width: 0;
+        }
+
+        .detail small {
+            display: block;
+            color: #718078;
+            margin-bottom: 7px;
+        }
+
+        .detail strong {
+            overflow-wrap: anywhere;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 7px 11px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            background: #edf0ee;
+            color: #64716a;
+        }
+
+        .success {
+            background: #e0f4e6;
+            color: #176b3a;
+        }
+
+        .danger {
+            background: #fde8e7;
+            color: #b42318;
+        }
+
+        .timeline {
+            display: grid;
+            gap: 0;
+            margin-top: 22px;
+        }
+
+        .step {
+            display: flex;
+            gap: 15px;
+            padding-bottom: 24px;
+        }
+
+        .dot {
+            width: 34px;
+            height: 34px;
+            flex-shrink: 0;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #edf0ee;
+            color: #7b8980;
+            font-weight: bold;
+        }
+
+        .step.done .dot {
+            background: #176b3a;
+            color: white;
+        }
+
+        .step.failed .dot {
+            background: #b42318;
+            color: white;
+        }
+
+        .step h4 { margin: 5px 0; }
+
+        .step p {
+            margin: 5px 0;
+            color: #718078;
+            font-size: 14px;
+        }
+
+        .payment-box {
+            background: #f3f8f4;
+            border-left: 5px solid #176b3a;
+            border-radius: 8px;
+            padding: 18px;
+            margin-top: 18px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .primary {
+            background: #176b3a;
+            color: white;
+            border: 0;
+            flex: 1;
+        }
+
+        .secondary {
+            background: white;
+            color: #176b3a;
+            border: 1px solid #176b3a;
+            flex: 1;
+        }
+
+        #message {
+            padding: 14px;
+            background: white;
+            border-radius: 9px;
+            margin-bottom: 15px;
+        }
+
+        @media(max-width:650px) {
+            header { padding: 15px 5%; }
+            header h1 { font-size: 23px; }
+            main { width: 92%; margin: 22px auto; }
+            .grid { grid-template-columns: repeat(2, 1fr); }
+            .card { padding: 17px; }
+            .actions { flex-direction: column; }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div>
+        <h1>AgriProcure 🌾</h1>
+        <p>Smart Procurement & Queue Management</p>
+    </div>
+    <button class="logout" onclick="logout()">Logout</button>
+</header>
+
+<main>
+    <div class="heading">
+        <h2>Procurement Status</h2>
+        <p class="muted">Track your crop from quality inspection to payment.</p>
+    </div>
+
+    <div id="message">Loading your procurement records...</div>
+
+    <section class="card">
+        <h3>Your Bookings</h3>
+        <div id="bookingList" class="booking-list"></div>
+    </section>
+
+    <section class="card" id="detailsCard" hidden>
+        <h3>Procurement Details</h3>
+        <div id="bookingDetails"></div>
+
+        <h3 style="margin-top:30px;">Procurement Journey</h3>
+        <div id="timeline" class="timeline"></div>
+
+        <div class="payment-box" id="paymentBox"></div>
+    </section>
+
+    <div class="actions">
+        <button class="secondary" onclick="location.href='livequeue.html'">
+            Back to Live Queue
+        </button>
+        <button class="primary" onclick="location.href='farmer-dashboard.html'">
+            Go to Dashboard
+        </button>
+    </div>
+</main>
+
+<script>
+    let bookings = [];
+    let selectedBookingId = null;
+
+    const userData = JSON.parse(localStorage.getItem("user") || "null");
+    const token = userData?.token;
+
+    function formatBookingDate(value) {
+        if (!value) return "Not available";
+
+        const raw = String(value);
+
+        if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) {
+            return raw;
+        }
+
+        const date = new Date(raw);
+
+        if (Number.isNaN(date.getTime())) {
+            return raw;
+        }
+
+        return new Intl.DateTimeFormat("en-IN", {
+            timeZone: "Asia/Kolkata",
+            day: "2-digit",
+            month: "short",
+            year: "numeric"
+        }).format(date);
+    }
+    function escapeHTML(value) {
+        return String(value ?? "Not available").replace(/[&<>"']/g, char => ({
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#039;"
+        })[char]);
+    }
+
+    function statusBadge(value) {
+        const status = value || "Pending";
+        const cls = status === "Accepted" || status === "Credited"
+            ? "success"
+            : status === "Rejected" ? "danger" : "";
+
+        return `<span class="status ${cls}">${escapeHTML(status)}</span>`;
+    }
+
+    async function loadBookings() {
+        const message = document.getElementById("message");
+
+        if (!token) {
+            message.textContent = "Please login as a farmer to view procurement status.";
+            return;
+        }
+
+        try {
+            const response = await fetch("/api/farmer/procurement", {
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+
+            const data = await response.json();
+
+            if (!response.ok || !data.success) {
+                throw new Error(data.message || "Unable to load records");
+            }
+
+            bookings = data.bookings || [];
+            message.textContent = `Successfully loaded ${bookings.length} booking(s) from database.`;
+
+            renderBookings();
+
+            if (bookings.length) {
+                const saved = bookings.find(b => String(b.booking_id) === String(selectedBookingId));
+                showBooking(saved ? saved.booking_id : bookings[0].booking_id);
+            } else {
+                document.getElementById("bookingList").innerHTML =
+                    "<p>No bookings found. Please book a procurement slot first.</p>";
+                document.getElementById("detailsCard").hidden = true;
+            }
+
+        } catch (error) {
+            console.error(error);
+            message.textContent = "Error: " + error.message;
+        }
+    }
+
+    function renderBookings() {
+        const container = document.getElementById("bookingList");
+
+        container.innerHTML = bookings.map(b => `
+            <div class="booking ${String(b.booking_id) === String(selectedBookingId) ? "selected" : ""}"
+                 onclick="showBooking(${Number(b.booking_id)})">
+                <div class="booking-top">
+                    <strong>Token #${escapeHTML(b.token)}</strong>
+                    ${statusBadge(b.payment_status || b.quality_status || "Waiting")}
+                </div>
+                <p>${escapeHTML(b.crop)} • ${escapeHTML(b.centre)}</p>
+                <small class="muted">Booking ID: ${escapeHTML(b.booking_id)} | ${escapeHTML(formatBookingDate(b.booking_date))}</small>
+            </div>
+        `).join("");
+    }
+
+    function showBooking(id) {
+        selectedBookingId = id;
+
+        const b = bookings.find(item => String(item.booking_id) === String(id));
+        if (!b) return;
+
+        document.getElementById("detailsCard").hidden = false;
+        renderBookings();
+
+        document.getElementById("bookingDetails").innerHTML = `
+            <div class="grid">
+                <div class="detail"><small>Farmer</small><strong>${escapeHTML(b.farmer_name)}</strong></div>
+                <div class="detail"><small>Crop</small><strong>${escapeHTML(b.crop)}</strong></div>
+                <div class="detail"><small>Token</small><strong>#${escapeHTML(b.token)}</strong></div>
+                <div class="detail"><small>Centre</small><strong>${escapeHTML(b.centre)}</strong></div>
+                <div class="detail"><small>Date</small><strong>${escapeHTML(formatBookingDate(b.booking_date))}</strong></div>
+                <div class="detail"><small>Time Slot</small><strong>${escapeHTML(b.slot)}</strong></div>
+            </div>
+        `;
+
+        const quality = b.quality_status || "Pending";
+        const weighingDone = b.net_weight !== null && b.net_weight !== undefined;
+        const billDone = !!b.bill_number;
+        const credited = b.payment_status === "Credited";
+        const rejected = quality === "Rejected";
+
+        const steps = [
+            ["Slot Booked", "Your procurement booking is confirmed.", true],
+            ["Quality Check", `Status: ${quality}${b.moisture_percent != null ? " • Moisture: " + b.moisture_percent + "%" : ""}${b.crop_grade ? " • " + b.crop_grade : ""}`, quality === "Accepted", rejected],
+            ["Weighing", weighingDone ? `Net weight: ${b.net_weight} kg` : "Awaiting weighing record.", weighingDone],
+            ["Bill Generation", billDone ? `Bill: ${b.bill_number} • ₹${Number(b.bill_amount).toFixed(2)}` : "Bill has not yet been generated.", billDone],
+            ["Payment", `Payment status: ${b.payment_status || "Pending"}${b.transaction_reference ? " • Reference: " + b.transaction_reference : ""}`, credited]
+        ];
+
+        document.getElementById("timeline").innerHTML = steps.map((s, i) => `
+            <div class="step ${s[3] ? "failed" : s[2] ? "done" : ""}">
+                <div class="dot">${s[3] ? "!" : s[2] ? "✓" : i + 1}</div>
+                <div>
+                    <h4>${s[0]}</h4>
+                    <p>${escapeHTML(s[1])}</p>
+                    ${i === 1 ? statusBadge(quality) : ""}
+                    ${i === 4 ? statusBadge(b.payment_status || "Pending") : ""}
+                </div>
+            </div>
+        `).join("");
+
+        document.getElementById("paymentBox").innerHTML = `
+            <strong>Payment Summary</strong>
+            <div class="grid">
+                <div class="detail"><small>Net Weight</small><strong>${weighingDone ? escapeHTML(b.net_weight) + " kg" : "Not recorded"}</strong></div>
+                <div class="detail"><small>Procurement Rate</small><strong>${b.procurement_rate != null ? "₹" + escapeHTML(b.procurement_rate) + "/kg" : "Not recorded"}</strong></div>
+                <div class="detail"><small>Bill Amount</small><strong>${billDone ? "₹" + Number(b.bill_amount).toFixed(2) : "Not generated"}</strong></div>
+            </div>
+            <p><strong>Payment Status:</strong> ${statusBadge(b.payment_status || "Pending")}</p>
+            ${b.payment_mode ? `<p><strong>Payment Mode:</strong> ${escapeHTML(b.payment_mode)}</p>` : ""}
+            ${b.payment_remarks ? `<p><strong>Remarks:</strong> ${escapeHTML(b.payment_remarks)}</p>` : ""}
+            <small class="muted">Payment information reflects the status recorded by the procurement officer. It is not independent bank verification.</small>
+        `;
+    }
+
+    function logout() {
+        localStorage.removeItem("user");
+        window.location.href = "index22.html";
+    }
+
+    loadBookings();
+</script>
+
+</body>
+</html>

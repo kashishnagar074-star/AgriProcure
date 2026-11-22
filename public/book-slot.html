@@ -1,0 +1,374 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Procurement Slot - AgriProcure</title>
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        .booking-container {
+            max-width: 850px;
+            margin: 35px auto;
+            padding: 20px;
+        }
+
+        .page-heading {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .booking-card {
+            background: white;
+            padding: 30px;
+            border-radius: 14px;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+        }
+
+        .booking-card h3 {
+            margin-top: 24px;
+            color: #176b3a;
+        }
+
+        .booking-card label {
+            display: block;
+            margin: 12px 0 7px;
+            font-weight: 600;
+        }
+
+        .booking-card select,
+        .booking-card input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 7px;
+            font-size: 15px;
+        }
+
+        .slot-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+            margin-top: 15px;
+        }
+
+        .slot {
+            padding: 17px;
+            border: 1px solid #ccc;
+            border-radius: 9px;
+            background: #fff;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .slot span {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .slot.active {
+            border: 2px solid #176b3a;
+            background: #eaf7ee;
+        }
+
+        .selected-slot {
+            margin: 22px 0;
+            padding: 14px;
+            background: #f0f8f2;
+            border-radius: 8px;
+        }
+
+        .confirm-booking {
+            width: 100%;
+            padding: 14px;
+            background: #176b3a;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .confirm-booking:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        #bookingMessage {
+            margin-top: 15px;
+            font-weight: 600;
+        }
+
+        #centreMessage {
+            margin-top: 8px;
+            font-size: 13px;
+            color: #176b3a;
+        }
+
+        @media (max-width: 600px) {
+            .slot-container {
+                grid-template-columns: 1fr;
+            }
+
+            .booking-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="dashboard-header">
+    <div>
+        <h1>AgriProcure</h1>
+        <p>Smart Procurement & Queue Management</p>
+    </div>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+</header>
+
+<main class="booking-container">
+
+    <div class="page-heading">
+        <h2>Book Your Procurement Slot</h2>
+        <p>Select your crop, procurement centre and preferred time slot.</p>
+    </div>
+
+    <section class="booking-card">
+
+        <h3>1. Select Crop</h3>
+        <label for="crop">Crop</label>
+
+        <select id="crop" required>
+            <option value="">Select your crop</option>
+            <option value="Wheat">Wheat</option>
+            <option value="Paddy">Paddy</option>
+            <option value="Soybean">Soybean</option>
+            <option value="Maize">Maize</option>
+        </select>
+
+        <h3>2. Select Procurement Centre</h3>
+        <label for="centre">Procurement Centre</label>
+
+        <select id="centre" required>
+            <option value="">Select centre</option>
+            <option value="Sehore Procurement Centre">Sehore Procurement Centre</option>
+            <option value="Bhopal Procurement Centre">Bhopal Procurement Centre</option>
+            <option value="Ashta Procurement Centre">Ashta Procurement Centre</option>
+            <option value="Ichhawar Procurement Centre">Ichhawar Procurement Centre</option>
+        </select>
+
+        <p id="centreMessage" aria-live="polite"></p>
+
+        <h3>3. Select Date</h3>
+        <label for="date">Procurement Date</label>
+        <input type="date" id="date" required>
+
+        <h3>4. Select Available Slot</h3>
+
+        <div class="slot-container">
+
+            <button type="button" class="slot"
+                onclick="chooseAgriSlot(this, '10:00 AM - 11:00 AM')">
+                <strong>10:00 AM</strong>
+                <span>8 slots available</span>
+            </button>
+
+            <button type="button" class="slot"
+                onclick="chooseAgriSlot(this, '11:00 AM - 12:00 PM')">
+                <strong>11:00 AM</strong>
+                <span>14 slots available</span>
+            </button>
+
+            <button type="button" class="slot"
+                onclick="chooseAgriSlot(this, '12:00 PM - 01:00 PM')">
+                <strong>12:00 PM</strong>
+                <span>5 slots available</span>
+            </button>
+
+            <button type="button" class="slot"
+                onclick="chooseAgriSlot(this, '02:00 PM - 03:00 PM')">
+                <strong>02:00 PM</strong>
+                <span>10 slots available</span>
+            </button>
+
+        </div>
+
+        <div class="selected-slot">
+            Selected Slot:
+            <strong id="selectedSlot">Not selected</strong>
+        </div>
+
+        <button
+            type="button"
+            class="confirm-booking"
+            id="confirmBookingButton"
+            onclick="submitAgriBooking()">
+            Confirm Slot
+        </button>
+
+        <p id="bookingMessage" aria-live="polite"></p>
+
+    </section>
+</main>
+
+<script src="/script.js"></script>
+
+<script>
+    let agriSelectedSlot = "";
+
+    // Automatically select the centre passed in the URL.
+    function selectCentreFromURL() {
+        const params = new URLSearchParams(window.location.search);
+        const requestedCentre = params.get("centre");
+        const dropdown = document.getElementById("centre");
+        const centreMessage = document.getElementById("centreMessage");
+
+        if (!dropdown) return;
+
+        if (!requestedCentre) {
+            centreMessage.textContent = "Please select your procurement centre.";
+            return;
+        }
+
+        const normalizedRequest = requestedCentre.trim().toLowerCase();
+
+        const matchingOption = Array.from(dropdown.options).find(option =>
+            option.value.trim().toLowerCase() === normalizedRequest
+        );
+
+        if (matchingOption) {
+            dropdown.value = matchingOption.value;
+            dropdown.dispatchEvent(new Event("change", { bubbles: true }));
+
+            centreMessage.textContent =
+                "✓ " + matchingOption.value + " selected automatically.";
+
+            console.log("Selected centre:", dropdown.value);
+        } else {
+            dropdown.value = "";
+            centreMessage.textContent =
+                "Centre not recognized. Please select manually.";
+
+            console.error("Invalid centre in URL:", requestedCentre);
+        }
+    }
+
+    // Run after the page elements are loaded.
+    selectCentreFromURL();
+
+    // Update message when farmer changes centre manually.
+    document.getElementById("centre").addEventListener("change", function() {
+        const message = document.getElementById("centreMessage");
+
+        if (this.value) {
+            message.textContent = "✓ Selected: " + this.value;
+        } else {
+            message.textContent = "Please select your procurement centre.";
+        }
+    });
+
+    function chooseAgriSlot(button, slot) {
+        document.querySelectorAll(".slot").forEach(function(item) {
+            item.classList.remove("active");
+        });
+
+        button.classList.add("active");
+        agriSelectedSlot = slot;
+
+        document.getElementById("selectedSlot").textContent = slot;
+    }
+
+    async function submitAgriBooking() {
+        const crop = document.getElementById("crop").value;
+        const centre = document.getElementById("centre").value;
+        const date = document.getElementById("date").value;
+        const message = document.getElementById("bookingMessage");
+        const confirmButton = document.getElementById("confirmBookingButton");
+
+        if (!crop || !centre || !date || !agriSelectedSlot) {
+            message.style.color = "red";
+            message.textContent =
+                "Please select crop, procurement centre, date and time slot.";
+            return;
+        }
+
+        const userData = JSON.parse(localStorage.getItem("user") || "null");
+
+        if (!userData || !userData.token || !userData.user) {
+            message.style.color = "red";
+            message.textContent = "Please login again to book your slot.";
+            return;
+        }
+
+        if (userData.user.role !== "farmer") {
+            message.style.color = "red";
+            message.textContent = "Only farmers can book procurement slots.";
+            return;
+        }
+
+        const booking = {
+            crop: crop,
+            centre: centre,
+            date: date,
+            slot: agriSelectedSlot
+        };
+
+        confirmButton.disabled = true;
+        message.style.color = "#176b3a";
+        message.textContent = "Booking your slot...";
+
+        try {
+            const response = await fetch("/api/bookings", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + userData.token
+                },
+                body: JSON.stringify(booking)
+            });
+
+            const data = await response.json();
+
+            if (!response.ok || !data.success || !data.booking) {
+                throw new Error(data.message || "Booking failed. Please try again.");
+            }
+
+            localStorage.setItem("bookingData", JSON.stringify(data.booking));
+
+            message.style.color = "#176b3a";
+            message.textContent =
+                "Slot booked successfully! Redirecting to token page...";
+
+            setTimeout(function() {
+                window.location.href = "/token.html";
+            }, 1200);
+
+        } catch (error) {
+            console.error("Booking error:", error);
+
+            message.style.color = "red";
+            message.textContent =
+                error.message || "Unable to connect to server.";
+
+            confirmButton.disabled = false;
+        }
+    }
+
+    // Prevent selection of past dates.
+    const dateInput = document.getElementById("date");
+    const today = new Date();
+    const localToday = [
+        today.getFullYear(),
+        String(today.getMonth() + 1).padStart(2, "0"),
+        String(today.getDate()).padStart(2, "0")
+    ].join("-");
+
+    dateInput.min = localToday;
+</script>
+
+</body>
+</html>
