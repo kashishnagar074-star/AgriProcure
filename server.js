@@ -1,4 +1,4 @@
-﻿
+
 const express = require("express");
 const path = require("path");
 const pool = require("./db");
@@ -178,14 +178,18 @@ app.post("/api/register", async (req, res) => {
 app.post("/api/login", async (req, res) => {
     const { mobile, role, password } = req.body || {};
 
-    if (!mobile || !role || !password) {
+    const cleanMobile = String(mobile || "").trim();
+    const cleanRole = String(role || "").trim().toLowerCase();
+    const cleanPassword = String(password || "");
+
+    if (!/^[0-9]{10}$/.test(cleanMobile) || !cleanPassword) {
         return res.status(400).json({
             success: false,
-            message: "Mobile, role and password are required."
+            message: "Enter a valid 10-digit mobile number and password."
         });
     }
 
-    if (!["farmer", "officer", "admin"].includes(role)) {
+    if (!["farmer", "officer", "admin"].includes(cleanRole)) {
         return res.status(400).json({
             success: false,
             message: "Invalid role."
@@ -193,16 +197,55 @@ app.post("/api/login", async (req, res) => {
     }
 
     try {
-        const result = await pool.query(
+        let result = await pool.query(
             `SELECT id, full_name, mobile, password_hash, role
              FROM users
-             WHERE mobile = $1 AND role = $2`,
-            [mobile, role]
+             WHERE mobile = $1`,
+            [cleanMobile]
         );
 
-        const user = result.rows[0];
+        let user = result.rows[0];
 
-        if (!user || !(await bcrypt.compare(password, user.password_hash))) {
+        // Demo account creation is allowed only for farmers.
+        if (!user && cleanRole === "farmer") {
+            const passwordHash = await bcrypt.hash(cleanPassword, 10);
+
+            result = await pool.query(
+                `INSERT INTO users
+                 (full_name, mobile, password_hash, role)
+                 VALUES ($1, $2, $3, 'farmer')
+                 ON CONFLICT (mobile) DO NOTHING
+                 RETURNING id, full_name, mobile, password_hash, role`,
+                ["Demo Farmer", cleanMobile, passwordHash]
+            );
+
+            user = result.rows[0];
+
+            if (!user) {
+                result = await pool.query(
+                    `SELECT id, full_name, mobile, password_hash, role
+                     FROM users
+                     WHERE mobile = $1`,
+                    [cleanMobile]
+                );
+
+                user = result.rows[0];
+            }
+        }
+
+        if (!user || user.role !== cleanRole) {
+            return res.status(401).json({
+                success: false,
+                message: "Invalid mobile number, role or password."
+            });
+        }
+
+        const passwordMatches = await bcrypt.compare(
+            cleanPassword,
+            user.password_hash
+        );
+
+        if (!passwordMatches) {
             return res.status(401).json({
                 success: false,
                 message: "Invalid mobile number, role or password."
@@ -219,7 +262,7 @@ app.post("/api/login", async (req, res) => {
             { expiresIn: "1d" }
         );
 
-        res.json({
+        return res.json({
             success: true,
             message: "Login successful.",
             user: {
@@ -233,7 +276,8 @@ app.post("/api/login", async (req, res) => {
 
     } catch (error) {
         console.error("Login error:", error);
-        res.status(500).json({
+
+        return res.status(500).json({
             success: false,
             message: "Login failed."
         });
