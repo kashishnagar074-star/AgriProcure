@@ -69,6 +69,16 @@ function requireOfficer(req, res, next) {
     next();
 }
 
+function blockDemoWrites(req, res, next) {
+    if (req.user?.demo === true) {
+        return res.status(403).json({
+            success: false,
+            message: "Demo mode is read-only. Changes are disabled."
+        });
+    }
+    next();
+}
+
 function requireFarmer(req, res, next) {
     if (!req.user || req.user.role !== "farmer") {
         return res.status(403).json({
@@ -98,6 +108,62 @@ app.get("/api/route-check", (req, res) => {
     res.json({
         success: true,
         message: "Updated server is running."
+    });
+});
+
+// =====================================
+// SAFE DEMO LOGIN (SAMPLE DATA ONLY)
+// =====================================
+
+app.post("/api/demo-login", (req, res) => {
+    if (process.env.DEMO_MODE !== "true") {
+        return res.status(404).json({
+            success: false,
+            message: "Demo access is currently disabled."
+        });
+    }
+
+    const role = String(req.body?.role || "").trim().toLowerCase();
+
+    if (!["officer", "admin"].includes(role)) {
+        return res.status(400).json({
+            success: false,
+            message: "Demo access is available only for Officer and Admin."
+        });
+    }
+
+    if (!process.env.JWT_SECRET) {
+        return res.status(500).json({
+            success: false,
+            message: "Server authentication is not configured."
+        });
+    }
+
+    const name = role === "admin" ? "Demo Admin" : "Demo Officer";
+    const mobile = "0000000000";
+
+    const token = jwt.sign(
+        {
+            userId: "demo-" + role,
+            mobile,
+            role,
+            demo: true
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: "2h" }
+    );
+
+    return res.json({
+        success: true,
+        message: "Demo login successful. Sample data only; read-only mode.",
+        user: {
+            id: "demo-" + role,
+            name,
+            mobile,
+            role,
+            demo: true
+        },
+        token
     });
 });
 
@@ -486,6 +552,38 @@ app.get(
     authenticateToken,
     requireOfficer,
     async (req, res) => {
+        if (req.user?.demo === true) {
+            return res.json({
+                success: true,
+                demo: true,
+                bookings: [{
+                    id: 900001,
+                    farmer: "Ramesh Kumar (Demo)",
+                    crop: "Wheat",
+                    centre: "Sehore Procurement Centre",
+                    date: "2026-11-23",
+                    slot: "10:00 AM - 11:00 AM",
+                    token: 42,
+                    user_id: "demo-farmer",
+                    quality_status: "Pending",
+                    moisture_percent: null,
+                    crop_grade: null,
+                    quality_remarks: "Sample demonstration record",
+                    gross_weight: null,
+                    tare_weight: null,
+                    net_weight: null,
+                    procurement_rate: null,
+                    bill_number: null,
+                    bill_amount: null,
+                    payment_status: "Pending",
+                    payment_mode: null,
+                    transaction_reference: null,
+                    payment_remarks: null,
+                    workflow_status: "Waiting"
+                }]
+            });
+        }
+
         try {
             const result = await pool.query(`
                 SELECT
@@ -550,6 +648,7 @@ app.put(
     "/api/procurement/:bookingId/quality",
     authenticateToken,
     requireOfficer,
+    blockDemoWrites,
     async (req, res) => {
         const bookingId = Number(req.params.bookingId);
         const status = String(req.body?.quality_status || "");
@@ -669,6 +768,7 @@ app.put(
     "/api/procurement/:bookingId/weighing",
     authenticateToken,
     requireOfficer,
+    blockDemoWrites,
     async (req, res) => {
         const bookingId = Number(req.params.bookingId);
         const gross = Number(req.body?.gross_weight);
@@ -741,6 +841,7 @@ app.post(
     "/api/procurement/:bookingId/bill",
     authenticateToken,
     requireOfficer,
+    blockDemoWrites,
     async (req, res) => {
         const bookingId = Number(req.params.bookingId);
         const rate = Number(req.body?.procurement_rate);
@@ -844,6 +945,7 @@ app.put(
     "/api/procurement/:bookingId/payment",
     authenticateToken,
     requireOfficer,
+    blockDemoWrites,
     async (req, res) => {
         const bookingId = Number(req.params.bookingId);
         const status = String(req.body?.payment_status || "");
@@ -1092,6 +1194,34 @@ app.get("/api/admin/summary", authenticateToken, async (req, res) => {
         return res.status(403).json({
             success: false,
             message: "Admin access required."
+        });
+    }
+
+    if (req.user?.demo === true) {
+        return res.json({
+            success: true,
+            demo: true,
+            stats: {
+                total_farmers: 128,
+                todays_bookings: 24,
+                active_queues: 3,
+                completed: 18,
+                pending_payments: 6
+            },
+            centres: [
+                { centre: "Sehore Procurement Centre", total_bookings: 42, active_bookings: 12 },
+                { centre: "Bhopal Procurement Centre", total_bookings: 35, active_bookings: 8 },
+                { centre: "Raisen Procurement Centre", total_bookings: 28, active_bookings: 5 }
+            ],
+            pendingPayments: [
+                { farmer: "Ramesh Kumar (Demo)", token: 42, centre: "Sehore Procurement Centre", bill_amount: 24500, payment_status: "Pending", bill_number: "DEMO-001" },
+                { farmer: "Sita Bai (Demo)", token: 38, centre: "Bhopal Procurement Centre", bill_amount: 18750, payment_status: "Processing", bill_number: "DEMO-002" }
+            ],
+            activities: [
+                { token: 42, farmer: "Ramesh Kumar (Demo)", centre: "Sehore Procurement Centre", title: "New booking created", description: "Sample booking registered" },
+                { token: 38, farmer: "Sita Bai (Demo)", centre: "Bhopal Procurement Centre", title: "Payment updated", description: "Payment: Processing" },
+                { token: 31, farmer: "Mohan Lal (Demo)", centre: "Raisen Procurement Centre", title: "Crop quality checked", description: "Quality: Accepted" }
+            ]
         });
     }
 

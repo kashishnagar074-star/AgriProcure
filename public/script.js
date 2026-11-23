@@ -114,6 +114,44 @@ async function login() {
 
 
 /* =====================================
+   SAFE DEMO LOGIN
+===================================== */
+
+async function demoLogin(role) {
+    const message = document.getElementById("message");
+
+    if (!["officer", "admin"].includes(role)) return;
+
+    message.style.color = "#176b3a";
+    message.innerText = "Opening sample dashboard...";
+
+    try {
+        const response = await fetch("/api/demo-login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ role })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success || !data.token) {
+            throw new Error(data.message || "Demo login failed.");
+        }
+
+        localStorage.setItem("user", JSON.stringify(data));
+        message.innerText = "Demo login successful. Redirecting...";
+
+        window.location.href = role === "officer"
+            ? "/officerdashboard.html"
+            : "/admindashboard.html";
+
+    } catch (error) {
+        message.style.color = "red";
+        message.innerText = error.message || "Unable to open demo dashboard.";
+    }
+}
+
+/* =====================================
    CONFIRM BOOKING
 ===================================== */
 
